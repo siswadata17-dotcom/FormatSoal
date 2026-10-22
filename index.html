@@ -6,279 +6,332 @@
 <title>Evaluasi PKK DKV BAB 1</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
+  :root {
+    --bg-primary: #f5f5f5;
+    --bg-secondary: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --border-color: #d1d5db;
+    --accent-blue: #3b82f6;
+    --accent-green: #16a34a;
+    --accent-red: #dc2626;
+    --accent-yellow: #f59e0b;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark-mode {
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --border-color: #374151;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  }
+
   * {
     -webkit-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     -webkit-touch-callout: none; box-sizing: border-box;
   }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f5f5f5; margin: 0; padding: 20px;
-    min-height: 100vh; color: #333;
+    background: var(--bg-primary); margin: 0; padding: 20px;
+    min-height: 100vh; color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
+
   .container {
-    max-width: 800px; margin: 0 auto; background: #fff;
-    border-radius: 8px; padding: 25px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    max-width: 800px; margin: 0 auto; background: var(--bg-secondary);
+    border-radius: 12px; padding: 25px;
+    box-shadow: var(--shadow);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative; z-index: 1;
   }
-  h1 { text-align: center; color: #1f2937; margin: 0 0 5px 0; font-size: 22px; }
-  .subtitle { text-align: center; color: #6b7280; margin-bottom: 20px; font-size: 14px; }
+
+  .fade-in { animation: fadeIn 0.4s ease-in-out; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 { text-align: center; color: var(--text-primary); margin: 0 0 5px 0; font-size: 22px; }
+  .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; }
+
+  .dark-mode-toggle {
+    position: fixed; top: 20px; right: 20px;
+    background: var(--bg-secondary); border: 1px solid var(--border-color);
+    border-radius: 50%; width: 45px; height: 45px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 20px; box-shadow: var(--shadow);
+    z-index: 900; transition: transform 0.2s;
+  }
+  .dark-mode-toggle:hover { transform: scale(1.1); }
+
   .timer {
-    position: sticky; top: 10px; background: #dc2626; color: white;
+    position: sticky; top: 10px; background: var(--accent-red); color: white;
     padding: 10px; border-radius: 6px; text-align: center;
-    font-size: 16px; font-weight: bold; margin-bottom: 15px; z-index: 100;
+    font-size: 16px; font-weight: bold; margin-bottom: 10px; z-index: 100;
   }
+
+  .progress-container {
+    width: 100%; background-color: var(--border-color);
+    border-radius: 999px; margin-bottom: 15px; height: 8px; overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%; background-color: var(--accent-green);
+    width: 0%; transition: width 0.4s ease;
+  }
+
   .violation-bar {
-    background: #fef3c7; border-left: 3px solid #f59e0b;
+    background: #fef3c7; border-left: 3px solid var(--accent-yellow);
     padding: 10px 15px; border-radius: 4px; margin-bottom: 15px;
     display: flex; justify-content: space-between; align-items: center; font-size: 14px;
+    color: #78350f;
   }
+  .dark-mode .violation-bar { background: #422006; color: #fde68a; }
   .violation-count {
-    background: #dc2626; color: white; padding: 3px 10px;
+    background: var(--accent-red); color: white; padding: 3px 10px;
     border-radius: 12px; font-size: 13px; font-weight: bold;
   }
-  .form-group { margin-bottom: 12px; }
-  label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 14px; color: #374151; }
+
+  .form-group { margin-bottom: 15px; }
+  label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: var(--text-primary); }
   input[type="text"], input[type="number"], input[type="password"] {
-    width: 100%; padding: 8px 10px; border: 1px solid #d1d5db;
-    border-radius: 4px; font-size: 14px;
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border-color);
+    border-radius: 6px; font-size: 14px; background: var(--bg-secondary);
+    color: var(--text-primary); transition: border-color 0.2s;
   }
-  input:focus { outline: none; border-color: #3b82f6; }
+  input:focus { outline: none; border-color: var(--accent-blue); }
+
   .btn {
-    background: #3b82f6; color: white; padding: 10px 20px;
-    border: none; border-radius: 4px; font-size: 14px;
-    cursor: pointer; font-weight: 600;
+    background: var(--accent-blue); color: white; padding: 10px 20px;
+    border: none; border-radius: 6px; font-size: 14px;
+    cursor: pointer; font-weight: 600; transition: background 0.2s, transform 0.1s;
   }
-  .btn:hover { background: #2563eb; }
-  .btn:disabled { background: #9ca3af; cursor: not-allowed; }
-  .btn-success { background: #16a34a; }
+  .btn:hover { background: #2563eb; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
+  .btn-success { background: var(--accent-green); }
   .btn-success:hover { background: #15803d; }
-  .btn-danger { background: #dc2626; }
+  .btn-danger { background: var(--accent-red); }
   .btn-danger:hover { background: #b91c1c; }
-  .btn-warning { background: #f59e0b; }
+  .btn-warning { background: var(--accent-yellow); color: #000; }
   .btn-warning:hover { background: #d97706; }
   .btn-secondary { background: #6b7280; }
   .btn-secondary:hover { background: #4b5563; }
+
   .btn-reset {
-    background: #dc2626; color: white; padding: 6px 12px;
+    background: var(--accent-red); color: white; padding: 6px 12px;
     border: none; border-radius: 4px; font-size: 12px;
     cursor: pointer; float: right; margin-bottom: 10px;
   }
-  .btn-reset:hover { background: #b91c1c; }
+
   .question {
-    background: #f9fafb; border-left: 3px solid #3b82f6;
-    padding: 12px 15px; margin-bottom: 12px; border-radius: 4px;
+    background: var(--bg-primary); border-left: 4px solid var(--accent-blue);
+    padding: 15px; margin-bottom: 15px; border-radius: 6px;
+    transition: background 0.3s;
   }
-  .question p { font-weight: 600; margin: 0 0 8px 0; font-size: 14px; color: #1f2937; }
+  .question p { font-weight: 600; margin: 0 0 10px 0; font-size: 15px; color: var(--text-primary); }
   .option {
-    display: block; margin: 5px 0; padding: 6px 10px;
-    background: white; border: 1px solid #e5e7eb;
-    border-radius: 4px; cursor: pointer; font-size: 14px;
+    display: block; margin: 6px 0; padding: 10px 12px;
+    background: var(--bg-secondary); border: 1px solid var(--border-color);
+    border-radius: 6px; cursor: pointer; font-size: 14px;
+    transition: all 0.2s; color: var(--text-primary);
   }
-  .option:hover { background: #eff6ff; border-color: #3b82f6; }
+  .option:hover { background: #eff6ff; border-color: var(--accent-blue); }
+  .dark-mode .option:hover { background: #1e3a8a; }
   .option input { margin-right: 8px; }
+
   .result {
-    text-align: center; padding: 25px; background: #f0fdf4;
-    border-radius: 8px; border: 1px solid #86efac;
+    text-align: center; padding: 30px; background: #f0fdf4;
+    border-radius: 8px; border: 1px solid #86efac; color: #166534;
   }
-  .result.violation-result { background: #fef2f2; border-color: #fca5a5; }
-  .result h2 { margin-top: 0; font-size: 20px; color: #166534; }
-  .result.violation-result h2 { color: #991b1b; }
-  .score { font-size: 42px; font-weight: bold; color: #166534; margin: 10px 0; }
+  .result.violation-result { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+  .result h2 { margin-top: 0; font-size: 22px; }
+  .score { font-size: 48px; font-weight: bold; color: #166534; margin: 15px 0; }
   .result.violation-result .score { color: #991b1b; }
-  .info-box {
-    background: #fef3c7; border-left: 3px solid #f59e0b;
-    padding: 10px; border-radius: 4px; margin-bottom: 15px;
-    font-size: 13px; color: #78350f;
+
+  .info-box, .warning-box, .locked-box {
+    padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 13px;
   }
-  .warning-box {
-    background: #fee2e2; border-left: 3px solid #dc2626;
-    padding: 10px; border-radius: 4px; margin-bottom: 15px;
-    font-size: 13px; color: #7f1d1d;
-  }
-  .locked-box {
-    background: #dbeafe; border-left: 3px solid #3b82f6;
-    padding: 12px; border-radius: 4px; margin-top: 15px;
-    font-size: 13px; color: #1e3a8a;
-  }
-  .modal {
-    display: none; position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%; background: rgba(0,0,0,0.5);
-    z-index: 1000; justify-content: center; align-items: center;
-  }
-  .modal-content {
-    background: white; padding: 25px; border-radius: 8px;
-    max-width: 380px; width: 90%;
-  }
-  .modal-content h3 { margin-top: 0; }
-  .modal input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #d1d5db; border-radius: 4px; }
-  .btn-cancel {
-    background: #6b7280; color: white; padding: 8px 16px;
-    border: none; border-radius: 4px; cursor: pointer; margin-left: 8px;
-  }
-  .clearfix::after { content: ""; display: table; clear: both; }
-  #violationOverlay {
-    display: none; position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%; background: rgba(220, 38, 38, 0.95);
-    z-index: 9999; justify-content: center; align-items: center;
-    flex-direction: column; color: white; text-align: center;
-  }
-  #violationOverlay h1 { color: white; font-size: 40px; margin: 0; }
-  #violationOverlay .counter {
-    font-size: 80px; font-weight: bold; margin: 15px 0;
-    background: white; color: #dc2626; width: 120px; height: 120px;
-    border-radius: 50%; display: flex; justify-content: center; align-items: center;
-  }
-  #violationOverlay p { font-size: 18px; margin: 5px 0; }
-  .violation-list {
-    text-align: left; background: #fff; color: #333;
-    padding: 12px; border-radius: 6px; margin-top: 15px;
-    border: 1px solid #fca5a5; font-size: 13px;
-  }
-  .violation-list h3 { color: #991b1b; margin-top: 0; font-size: 15px; }
-  .violation-list ul { padding-left: 18px; margin: 0; }
-  .violation-list li { margin: 3px 0; }
+  .info-box { background: #fef3c7; border-left: 3px solid var(--accent-yellow); color: #78350f; }
+  .warning-box { background: #fee2e2; border-left: 3px solid var(--accent-red); color: #7f1d1d; }
+  .locked-box { background: #dbeafe; border-left: 3px solid var(--accent-blue); color: #1e3a8a; }
+  .dark-mode .info-box { background: #422006; color: #fde68a; }
+  .dark-mode .warning-box { background: #450a0a; color: #fecaca; }
+  .dark-mode .locked-box { background: #1e3a8a; color: #bfdbfe; }
 
   .menu-awal { text-align: center; padding: 30px 20px; }
-  .menu-awal h2 { color: #1f2937; margin-bottom: 10px; font-size: 20px; }
-  .menu-awal p { color: #6b7280; margin-bottom: 25px; font-size: 14px; }
-  .menu-buttons {
-    display: flex; flex-direction: column; gap: 12px;
-    max-width: 400px; margin: 0 auto;
-  }
+  .menu-buttons { display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto; }
   .menu-btn {
-    padding: 15px 20px; border: none; border-radius: 6px;
+    padding: 15px 20px; border: none; border-radius: 8px;
     font-size: 15px; font-weight: 600; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    gap: 10px; transition: 0.2s;
+    gap: 10px; transition: all 0.2s;
   }
-  .menu-btn-siswa { background: #3b82f6; color: white; }
-  .menu-btn-siswa:hover { background: #2563eb; }
+  .menu-btn-siswa { background: var(--accent-blue); color: white; }
+  .menu-btn-siswa:hover { background: #2563eb; transform: translateY(-2px); }
   .menu-btn-guru { background: #6b7280; color: white; }
-  .menu-btn-guru:hover { background: #4b5563; }
+  .menu-btn-guru:hover { background: #4b5563; transform: translateY(-2px); }
 
   .dashboard-guru { display: none; }
   .dashboard-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white; padding: 20px; border-radius: 8px;
-    margin-bottom: 20px; display: flex;
-    justify-content: space-between; align-items: center;
+    margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
   }
-  .dashboard-header h2 { margin: 0; font-size: 20px; }
-  .dashboard-header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
   .panel {
-    background: #f9fafb; border: 1px solid #e5e7eb;
-    border-radius: 6px; padding: 18px; margin-bottom: 15px;
+    background: var(--bg-primary); border: 1px solid var(--border-color);
+    border-radius: 8px; padding: 18px; margin-bottom: 15px;
+    transition: background 0.3s;
   }
-  .panel h3 {
-    margin: 0 0 12px 0; font-size: 16px; color: #1f2937;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .panel-row {
-    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-  }
+  .panel h3 { margin: 0 0 12px 0; font-size: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+  .panel-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .panel-row input[type="number"] { width: 100px; }
-  .status-badge {
-    display: inline-block; padding: 3px 10px; border-radius: 12px;
-    font-size: 12px; font-weight: 600; margin-left: 8px;
-  }
+
+  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-left: 8px; }
   .status-on { background: #dcfce7; color: #166534; }
   .status-off { background: #fee2e2; color: #991b1b; }
+  .dark-mode .status-on { background: #064e3b; color: #6ee7b7; }
+  .dark-mode .status-off { background: #450a0a; color: #fca5a5; }
+
   .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
   .toggle-switch input { opacity: 0; width: 0; height: 0; }
-  .slider {
-    position: absolute; cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ccc; transition: .4s; border-radius: 26px;
-  }
-  .slider:before {
-    position: absolute; content: ""; height: 20px; width: 20px;
-    left: 3px; bottom: 3px; background-color: white;
-    transition: .4s; border-radius: 50%;
-  }
-  input:checked + .slider { background-color: #16a34a; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 26px; }
+  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+  input:checked + .slider { background-color: var(--accent-green); }
   input:checked + .slider:before { transform: translateX(24px); }
+
   .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
-  .file-input-wrapper input[type=file] {
-    position: absolute; left: 0; top: 0; opacity: 0;
-    cursor: pointer; width: 100%; height: 100%;
-  }
-  .preview-box {
-    background: white; border: 1px solid #e5e7eb;
-    border-radius: 4px; padding: 10px; margin-top: 10px;
-    max-height: 200px; overflow-y: auto; font-size: 12px;
-  }
-  .preview-item { padding: 5px; border-bottom: 1px solid #f3f4f6; }
+  .file-input-wrapper input[type=file] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  
+  .preview-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-top: 10px; max-height: 200px; overflow-y: auto; font-size: 12px; color: var(--text-primary); }
+  .preview-item { padding: 6px; border-bottom: 1px solid var(--border-color); }
   .preview-item:last-child { border-bottom: none; }
-  .info-small { font-size: 12px; color: #6b7280; margin-top: 8px; font-style: italic; }
-  .alert-success {
-    background: #dcfce7; border-left: 3px solid #16a34a;
-    padding: 10px; border-radius: 4px; color: #166534;
-    margin-top: 10px; font-size: 13px;
-  }
-  .alert-error {
-    background: #fee2e2; border-left: 3px solid #dc2626;
-    padding: 10px; border-radius: 4px; color: #991b1b;
-    margin-top: 10px; font-size: 13px;
-  }
-  .alert-info {
-    background: #dbeafe; border-left: 3px solid #3b82f6;
-    padding: 10px; border-radius: 4px; color: #1e40af;
-    margin-top: 10px; font-size: 13px;
-  }
-  .input-judul { font-size: 16px !important; font-weight: 600 !important; padding: 10px 12px !important; }
-  .preview-judul {
-    background: white; border: 1px dashed #d1d5db;
-    border-radius: 6px; padding: 15px; margin-top: 10px; text-align: center;
-  }
-  .preview-judul h3 { color: #1f2937; margin: 0 0 5px 0; font-size: 18px; }
-  .preview-judul p { color: #6b7280; margin: 0; font-size: 13px; font-style: italic; }
+  .info-small { font-size: 12px; color: var(--text-secondary); margin-top: 8px; font-style: italic; }
+
+  .alert-success, .alert-error, .alert-info { padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 13px; }
+  .alert-success { background: #dcfce7; border-left: 3px solid var(--accent-green); color: #166534; }
+  .alert-error { background: #fee2e2; border-left: 3px solid var(--accent-red); color: #991b1b; }
+  .alert-info { background: #dbeafe; border-left: 3px solid var(--accent-blue); color: #1e40af; }
+  .dark-mode .alert-success { background: #064e3b; color: #6ee7b7; }
+  .dark-mode .alert-error { background: #450a0a; color: #fca5a5; }
+  .dark-mode .alert-info { background: #1e3a8a; color: #bfdbfe; }
+
+  .input-judul { font-size: 15px !important; font-weight: 600 !important; padding: 10px 12px !important; }
+  .preview-judul { background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 6px; padding: 15px; margin-top: 10px; text-align: center; }
+  .preview-judul h3 { color: var(--text-primary); margin: 0 0 5px 0; font-size: 18px; }
+  .preview-judul p { color: var(--text-secondary); margin: 0; font-size: 13px; font-style: italic; }
+
   .password-wrapper { position: relative; }
   .password-wrapper input { padding-right: 40px; }
-  .password-toggle {
-    position: absolute; right: 8px; top: 50%;
-    transform: translateY(-50%); background: none;
-    border: none; cursor: pointer; font-size: 18px;
-    color: #6b7280; padding: 4px 8px;
+  .password-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px; color: var(--text-secondary); padding: 4px 8px; }
+  .password-toggle:hover { color: var(--accent-blue); }
+
+  .current-password-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 10px; margin-bottom: 12px; font-size: 13px; color: #1e40af; display: flex; justify-content: space-between; align-items: center; }
+  .dark-mode .current-password-box { background: #1e3a8a; border-color: #1e40af; color: #bfdbfe; }
+
+  .version-badge { display: inline-block; background: #1e40af; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px; }
+  .panel-highlight { border-left: 4px solid var(--accent-green); background: linear-gradient(to right, #f0fdf4 0%, var(--bg-primary) 100%); }
+  .dark-mode .panel-highlight { background: linear-gradient(to right, #064e3b 0%, var(--bg-primary) 100%); }
+
+  .step-list { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; padding: 12px 12px 12px 30px; margin: 10px 0; font-size: 13px; color: var(--text-primary); }
+  .step-list li { margin: 6px 0; }
+
+  .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
+  .modal-content { background: var(--bg-secondary); padding: 25px; border-radius: 12px; max-width: 380px; width: 90%; box-shadow: var(--shadow); color: var(--text-primary); }
+  .modal-content h3 { margin-top: 0; }
+  .modal input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-primary); color: var(--text-primary); }
+  .btn-cancel { background: #6b7280; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; margin-left: 8px; font-weight: 600; }
+
+  #violationOverlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(220, 38, 38, 0.95);
+    z-index: 9999; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center;
   }
-  .password-toggle:hover { color: #3b82f6; }
-  .password-strength { font-size: 12px; margin-top: 5px; font-weight: 600; }
-  .strength-weak { color: #dc2626; }
-  .strength-medium { color: #f59e0b; }
-  .strength-strong { color: #16a34a; }
-  .current-password-box {
-    background: #eff6ff; border: 1px solid #bfdbfe;
-    border-radius: 4px; padding: 10px; margin-bottom: 12px;
-    font-size: 13px; color: #1e40af;
-    display: flex; justify-content: space-between; align-items: center;
+  #violationOverlay h1 { color: white; font-size: 36px; margin: 0; }
+  #violationOverlay .counter { font-size: 70px; font-weight: bold; margin: 15px 0; background: white; color: var(--accent-red); width: 100px; height: 100px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+  #violationOverlay p { font-size: 18px; margin: 5px 0; }
+  .violation-list { text-align: left; background: var(--bg-secondary); color: var(--text-primary); padding: 15px; border-radius: 6px; margin-top: 15px; border: 1px solid #fca5a5; font-size: 13px; }
+  .violation-list h3 { color: #991b1b; margin-top: 0; font-size: 15px; }
+  .violation-list ul { padding-left: 18px; margin: 0; }
+  .violation-list li { margin: 4px 0; }
+
+  .forensik-panel {
+    background: var(--bg-primary); border: 1px solid var(--border-color);
+    border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left;
   }
-  .version-badge {
-    display: inline-block; background: #1e40af; color: white;
-    padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px;
+  .forensik-panel h3 {
+    color: var(--accent-blue); margin: 0 0 10px 0; font-size: 15px;
+    border-bottom: 1px solid var(--border-color); padding-bottom: 8px;
   }
-  .panel-highlight {
-    border-left: 4px solid #16a34a;
-    background: linear-gradient(to right, #f0fdf4 0%, #f9fafb 100%);
+  .forensik-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    margin-bottom: 12px;
   }
-  .step-list {
-    background: white; border: 1px solid #e5e7eb;
-    border-radius: 4px; padding: 12px 12px 12px 30px;
-    margin: 10px 0; font-size: 13px;
+  .forensik-item {
+    background: var(--bg-secondary); padding: 10px; border-radius: 6px;
+    border: 1px solid var(--border-color);
   }
-  .step-list li { margin: 5px 0; }
+  .forensik-item .label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; }
+  .forensik-item .value { font-size: 18px; font-weight: bold; color: var(--text-primary); margin-top: 2px; }
+  .forensik-item.warning { border-color: var(--accent-yellow); background: #fef3c7; }
+  .dark-mode .forensik-item.warning { background: #422006; }
+  .forensik-item.warning .value { color: #92400e; }
+  .dark-mode .forensik-item.warning .value { color: #fde68a; }
+  .forensik-item.danger { border-color: var(--accent-red); background: #fee2e2; }
+  .dark-mode .forensik-item.danger { background: #450a0a; }
+  .forensik-item.danger .value { color: #991b1b; }
+  .dark-mode .forensik-item.danger .value { color: #fca5a5; }
+
+  .forensik-table {
+    width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px;
+  }
+  .forensik-table th {
+    background: var(--bg-secondary); padding: 6px; text-align: left;
+    border: 1px solid var(--border-color); font-weight: 600;
+  }
+  .forensik-table td {
+    padding: 5px 6px; border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+  }
+  .forensik-table tr.suspicious td { background: #fef3c7; color: #92400e; font-weight: 600; }
+  .dark-mode .forensik-table tr.suspicious td { background: #422006; color: #fde68a; }
+
+  #watermarkOverlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 50;
+    overflow: hidden;
+  }
+  #watermarkOverlay .wm-text {
+    position: absolute; font-size: 18px; font-weight: bold;
+    color: rgba(0, 0, 0, 0.04); white-space: nowrap;
+    transform: rotate(-25deg);
+    user-select: none;
+  }
+  .dark-mode #watermarkOverlay .wm-text {
+    color: rgba(255, 255, 255, 0.04);
+  }
+
+  .tips-list { margin: 5px 0 0 0; padding-left: 20px; font-size: 12px; }
+  .tips-list li { margin: 3px 0; }
 </style>
 </head>
 <body oncontextmenu="return false;">
+
+<button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Mode Gelap">🌙</button>
 
 <div id="violationOverlay">
   <h1>⚠️ PELANGGARAN TERDETEKSI</h1>
   <div class="counter" id="overlayCounter">1</div>
   <p id="overlayMessage">Aktivitas mencurigakan terdeteksi!</p>
-  <p>Pelanggaran: <span id="overlayCount">1</span> / 5</p>
-  <p style="font-size:14px; opacity:0.9;">5 pelanggaran = ujian otomatis dikumpulkan</p>
+  <p>Pelanggaran: <span id="overlayCount">1</span> / <span id="overlayMax">5</span></p>
+  <p id="overlayInfoText" style="font-size:14px; opacity:0.9;">5 pelanggaran = ujian otomatis dikumpulkan</p>
 </div>
 
-<div class="container">
+<div id="watermarkOverlay"></div>
+
+<div class="container fade-in">
   <h1 id="judulUtama">Evaluasi PKK DKV BAB 1</h1>
   <p class="subtitle" id="subJudul">Kewirausahaan Produk Teknik Komputer dan Informatika</p>
 
@@ -291,9 +344,9 @@
     </div>
   </div>
 
-  <div id="identityForm" style="display:none;">
+  <div id="identityForm" style="display:none;" class="fade-in">
     <div class="info-box" id="infoWaktu">⏰ Waktu: <strong>30 menit</strong> | Tidak bisa dikumpulkan sebelum waktu habis</div>
-    <div class="warning-box">🚨 <strong>PERINGATAN:</strong> Ujian akan berjalan dalam mode FULLSCREEN. Dilarang screenshot, pindah tab, atau keluar dari layar. <strong>5 pelanggaran = auto-submit.</strong></div>
+    <div class="warning-box">🚨 <strong>PERINGATAN:</strong> Ujian berjalan dalam mode FULLSCREEN. Dilarang screenshot, pindah tab, atau keluar layar. <strong><span id="maxPelanggaranInfo">5</span> pelanggaran = auto-submit.</strong><br>📸 Layar akan ditandai dengan <strong>watermark nama Anda</strong> sebagai bukti digital.</div>
     <div class="form-group">
       <label>Nama Lengkap:</label>
       <input type="text" id="nama" placeholder="Masukkan nama lengkap">
@@ -306,13 +359,17 @@
       <label>Kelas:</label>
       <input type="text" id="kelas" placeholder="Contoh: XI DKV 1">
     </div>
+    <div class="form-group">
+      <label>Token Ujian:</label>
+      <input type="text" id="tokenUjian" placeholder="Masukkan token dari guru">
+    </div>
     <div style="display:flex; gap:10px;">
       <button class="btn btn-success" onclick="mulaiUjian()" style="flex:1;">▶ Mulai Ujian (Fullscreen)</button>
       <button class="btn btn-secondary" onclick="kembaliKeMenu()">← Kembali</button>
     </div>
   </div>
 
-  <div id="dashboardGuru" class="dashboard-guru">
+  <div id="dashboardGuru" class="dashboard-guru fade-in">
     <div class="dashboard-header">
       <div>
         <h2>🎓 Dashboard Guru <span class="version-badge" id="versionBadge">v1.0</span></h2>
@@ -322,30 +379,33 @@
     </div>
 
     <div class="panel">
-      <h3>📝 1. Edit Judul Ujian</h3>
-      <p style="font-size:13px; margin:0 0 10px 0; color:#6b7280;">Ubah judul dan subjudul ujian sesuai kebutuhan.</p>
+      <h3>📝 1. Edit Judul & Token Ujian</h3>
       <div class="form-group">
         <label>Judul Utama:</label>
         <input type="text" id="inputJudul" class="input-judul" placeholder="Contoh: Evaluasi PKK DKV BAB 1">
       </div>
       <div class="form-group">
         <label>Subjudul:</label>
-        <input type="text" id="inputSubJudul" class="input-judul" placeholder="Contoh: Kewirausahaan Produk Teknik Komputer dan Informatika">
+        <input type="text" id="inputSubJudul" class="input-judul" placeholder="Contoh: Kewirausahaan...">
+      </div>
+      <div class="form-group">
+        <label>Token Ujian (Kode Akses):</label>
+        <input type="text" id="inputToken" class="input-judul" placeholder="Contoh: DKV2024">
       </div>
       <div class="panel-row">
-        <button class="btn btn-success" onclick="simpanJudul()" style="padding:8px 15px; font-size:13px;">💾 Simpan Judul</button>
-        <button class="btn btn-secondary" onclick="resetJudul()" style="padding:8px 15px; font-size:13px;">🔄 Reset ke Default</button>
+        <button class="btn btn-success" onclick="simpanJudul()" style="padding:8px 15px; font-size:13px;">💾 Simpan</button>
+        <button class="btn btn-secondary" onclick="resetJudul()" style="padding:8px 15px; font-size:13px;">🔄 Reset Default</button>
       </div>
       <div class="preview-judul">
         <h3 id="previewJudulUtama">Evaluasi PKK DKV BAB 1</h3>
         <p id="previewSubJudul">Kewirausahaan Produk Teknik Komputer dan Informatika</p>
+        <p style="margin-top:8px; font-size:12px; color:var(--accent-blue);">🔑 Token: <strong id="previewToken">DKV2024</strong></p>
       </div>
       <div id="statusJudul"></div>
     </div>
 
     <div class="panel">
       <h3>🔑 2. Ubah Password Guru</h3>
-      <p style="font-size:13px; margin:0 0 10px 0; color:#6b7280;">Ubah password untuk mengakses dashboard guru dan fitur reset ujian.</p>
       <div class="current-password-box">
         <span>🔐 Password saat ini: <strong id="displayPassword">••••••••</strong></span>
         <button class="btn btn-secondary" onclick="toggleDisplayPassword()" style="padding:4px 10px; font-size:12px;" id="btnTogglePwd">👁️ Lihat</button>
@@ -363,7 +423,7 @@
           <input type="password" id="pwdBaru" placeholder="Minimal 4 karakter" oninput="checkPasswordStrength()">
           <button type="button" class="password-toggle" onclick="togglePwd('pwdBaru')">👁️</button>
         </div>
-        <div id="pwdStrength" class="password-strength"></div>
+        <div id="pwdStrength" style="font-size:12px; margin-top:5px; font-weight:600;"></div>
       </div>
       <div class="form-group">
         <label>Konfirmasi Password Baru:</label>
@@ -374,62 +434,97 @@
       </div>
       <div class="panel-row">
         <button class="btn btn-success" onclick="ubahPassword()" style="padding:8px 15px; font-size:13px;">💾 Ubah Password</button>
-        <button class="btn btn-secondary" onclick="resetPasswordDefault()" style="padding:8px 15px; font-size:13px;">🔄 Reset ke Default</button>
+        <button class="btn btn-secondary" onclick="resetPasswordDefault()" style="padding:8px 15px; font-size:13px;">🔄 Reset Default</button>
       </div>
       <div id="statusPassword"></div>
-      <p class="info-small">⚠️ Password default awal: <strong>guru123</strong></p>
     </div>
 
     <div class="panel">
-      <h3>⏰ 3. Atur Waktu Pengerjaan</h3>
-      <div class="panel-row">
+      <h3>⏰ 3. Atur Waktu & Jumlah Soal</h3>
+      <div class="panel-row" style="margin-bottom:10px;">
         <label style="margin:0;">Durasi:</label>
-        <input type="number" id="inputWaktu" min="1" max="180" value="30">
-        <span>menit</span>
-        <button class="btn btn-success" onclick="simpanWaktu()" style="padding:8px 15px; font-size:13px;">💾 Simpan</button>
+        <input type="number" id="inputWaktu" min="1" max="180" value="30"> <span>menit</span>
+        <button class="btn btn-success" onclick="simpanWaktu()" style="padding:8px 15px; font-size:13px;">💾 Simpan Waktu</button>
       </div>
-      <p class="info-small">⚠️ Perubahan waktu hanya berlaku untuk siswa yang BELUM memulai ujian.</p>
+      <div class="panel-row">
+        <label style="margin:0;">Jumlah Soal Ditampilkan:</label>
+        <input type="number" id="inputJumlahSoal" min="0" value="0"> 
+        <span>(0 = Semua soal)</span>
+        <button class="btn btn-success" onclick="simpanJumlahSoal()" style="padding:8px 15px; font-size:13px;">💾 Simpan</button>
+      </div>
+      <p class="info-small">⚠️ Jika "Jumlah Soal" kurang dari total bank soal, sistem akan mengacak dan mengambil subset soal tersebut (Bank Soal Acak).</p>
       <div id="statusWaktu"></div>
     </div>
 
     <div class="panel">
       <h3>📊 4. Sinkron Soal dari Excel</h3>
-      <p style="font-size:13px; margin:0 0 10px 0; color:#6b7280;">Format Excel: Kolom A = Pertanyaan, B-F = Opsi A-E, G = Jawaban Benar (A/B/C/D/E)</p>
+      <p style="font-size:13px; margin:0 0 10px 0; color:var(--text-secondary);">Format: Kolom A=Pertanyaan, B-F=Opsi A-E, G=Jawaban Benar (A/B/C/D/E)</p>
       <div class="panel-row">
         <div class="file-input-wrapper">
           <button class="btn btn-warning">📁 Pilih File Excel</button>
           <input type="file" id="fileExcel" accept=".xlsx,.xls" onchange="importExcel(event)">
         </div>
-        <button class="btn btn-secondary" onclick="downloadTemplate()" style="padding:8px 15px; font-size:13px;">📥 Download Template</button>
-        <button class="btn btn-danger" onclick="resetSoalDefault()" style="padding:8px 15px; font-size:13px;">🔄 Reset ke Default</button>
+        <button class="btn btn-secondary" onclick="downloadTemplate()" style="padding:8px 15px; font-size:13px;">📥 Template</button>
+        <button class="btn btn-danger" onclick="resetSoalDefault()" style="padding:8px 15px; font-size:13px;">🔄 Reset Default</button>
       </div>
       <div id="statusImport"></div>
       <div id="previewSoal"></div>
-      <p class="info-small">📌 Jumlah soal saat ini: <strong id="jumlahSoalSaatIni">50</strong></p>
+      <p class="info-small">📌 Total soal dalam bank: <strong id="jumlahSoalSaatIni">10</strong></p>
     </div>
 
     <div class="panel">
-      <h3>🔀 5. Acak Soal</h3>
-      <div class="panel-row">
-        <label style="margin:0;">Status:</label>
+      <h3>🔀 5. Pengaturan Pengacakan</h3>
+      <div class="panel-row" style="margin-bottom:10px;">
+        <label style="margin:0;">Acak Urutan Soal:</label>
         <label class="toggle-switch">
           <input type="checkbox" id="toggleAcak" onchange="simpanAcak()">
           <span class="slider"></span>
         </label>
         <span id="statusAcak" class="status-badge status-off">NONAKTIF</span>
       </div>
-      <p class="info-small">Jika aktif, urutan soal akan diacak setiap kali siswa memulai ujian baru.</p>
+      <div class="panel-row">
+        <label style="margin:0;">Acak Opsi Jawaban:</label>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggleAcakOpsi" onchange="simpanAcakOpsi()">
+          <span class="slider"></span>
+        </label>
+        <span id="statusAcakOpsi" class="status-badge status-off">NONAKTIF</span>
+      </div>
+      <p class="info-small">• Acak Soal: Mengacak urutan soal.<br>• Acak Opsi: Mengacak posisi A/B/C/D/E per soal (setiap siswa mendapat urutan berbeda).</p>
     </div>
 
     <div class="panel">
-      <h3>🗑️ 6. Reset Data Siswa</h3>
-      <p style="font-size:13px; margin:0 0 10px 0; color:#6b7280;">Hapus semua data siswa yang sedang/sudah ujian. Pengaturan guru TIDAK terhapus.</p>
+      <h3>⚠️ 6. Atur Batas Pelanggaran</h3>
+      <p style="font-size:13px; margin:0 0 10px 0; color:var(--text-secondary);">
+        Tentukan jumlah maksimal pelanggaran sebelum ujian otomatis dikumpulkan.
+      </p>
+      <div class="panel-row">
+        <label style="margin:0;">Batas Pelanggaran:</label>
+        <input type="number" id="inputMaxPelanggaran" min="1" max="20" value="5">
+        <span>kali pelanggaran</span>
+        <button class="btn btn-success" onclick="simpanMaxPelanggaran()" style="padding:8px 15px; font-size:13px;">💾 Simpan</button>
+        <button class="btn btn-secondary" onclick="resetMaxPelanggaran()" style="padding:8px 15px; font-size:13px;">🔄 Reset (5)</button>
+      </div>
+      <div class="alert-info" style="margin-top:10px;">
+        💡 <strong>Tips Pengaturan:</strong>
+        <ul class="tips-list">
+          <li><strong>Batas rendah (1-3):</strong> Sangat ketat, cocok untuk ujian penting/ujian akhir</li>
+          <li><strong>Batas sedang (4-6):</strong> Standar, cocok untuk ujian harian (default: 5)</li>
+          <li><strong>Batas tinggi (7+):</strong> Longgar, cocok untuk latihan/tryout</li>
+        </ul>
+      </div>
+      <div id="statusMaxPelanggaran"></div>
+    </div>
+
+    <div class="panel">
+      <h3>🗑️ 7. Reset Data Siswa</h3>
+      <p style="font-size:13px; margin:0 0 10px 0; color:var(--text-secondary);">Hapus semua data siswa yang sedang/sudah ujian. Pengaturan guru TIDAK terhapus.</p>
       <button class="btn btn-danger" onclick="resetDataSiswa()" style="padding:8px 15px; font-size:13px;">🗑️ Reset Data Siswa</button>
       <div id="statusResetSiswa"></div>
     </div>
 
     <div class="panel panel-highlight">
-      <h3>💾 7. Simpan Permanen ke File HTML</h3>
+      <h3>💾 8. Simpan Permanen ke File HTML</h3>
       <p style="font-size:13px; margin:0 0 10px 0; color:#065f46;">
         <strong>Simpan semua perubahan</strong> ke dalam file HTML. File baru akan terdownload dan bisa dibagikan ke siswa.
       </p>
@@ -440,38 +535,42 @@
           <li>Klik <strong>"💾 Download HTML Terbaru"</strong></li>
           <li>File HTML baru akan terdownload otomatis</li>
           <li><strong>Ganti file HTML lama</strong> dengan file baru di hosting</li>
-          <li>Bagikan link baru → perubahan otomatis diterapkan!</li>
         </ol>
       </div>
       <div class="panel-row" style="margin-top:15px;">
         <button class="btn btn-success" onclick="simpanPermanenKeHTML()" style="padding:12px 25px; font-size:15px;">
           💾 Download HTML Terbaru
         </button>
-        <span style="font-size:13px; color:#6b7280;">
-          Versi saat ini: <strong id="currentVersionDisplay">v1.0</strong>
+        <span style="font-size:13px; color:var(--text-secondary);">
+          Versi: <strong id="currentVersionDisplay">v1.0</strong>
         </span>
       </div>
       <div id="statusSimpanPermanen"></div>
-      <p class="info-small">
-        ⚠️ <strong>Penting:</strong> Setelah download, ganti file HTML lama dengan yang baru, lalu upload ke hosting.
-      </p>
     </div>
   </div>
 
-  <div id="quizArea" style="display:none;">
+  <div id="quizArea" style="display:none;" class="fade-in">
     <div class="clearfix">
       <button class="btn-reset" onclick="bukaModalReset()">🔐 Reset (Guru)</button>
     </div>
     <div class="timer" id="timer">Waktu Tersisa: 30:00</div>
+    
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+    <div style="text-align:right; font-size:12px; color:var(--text-secondary); margin-top:-10px; margin-bottom:10px;">
+      Dikerjakan: <span id="progressText">0 / 0</span>
+    </div>
+
     <div class="violation-bar">
       <span>⚠️ Pelanggaran:</span>
       <span class="violation-count" id="violationCountDisplay">0 / 5</span>
     </div>
     <div id="soalContainer"></div>
-    <button class="btn" id="btnKumpul" onclick="kumpulkan()" disabled style="width:100%; margin-top:15px;">Kumpulkan Jawaban</button>
+    <button class="btn" id="btnKumpul" onclick="kumpulkan()" disabled style="width:100%; margin-top:15px; padding:12px;">Kumpulkan Jawaban</button>
   </div>
 
-  <div id="resultArea" style="display:none;"></div>
+  <div id="resultArea" style="display:none;" class="fade-in"></div>
 </div>
 
 <div class="modal" id="loginModal">
@@ -479,30 +578,34 @@
     <h3>🔑 Login Guru</h3>
     <p style="font-size:14px; margin:10px 0;">Masukkan password guru:</p>
     <input type="password" id="passwordLogin" placeholder="Password">
-    <button class="btn" onclick="prosesLogin()">Login</button>
-    <button class="btn-cancel" onclick="tutupModal('loginModal')">Batal</button>
+    <div style="margin-top:15px;">
+      <button class="btn" onclick="prosesLogin()">Login</button>
+      <button class="btn-cancel" onclick="tutupModal('loginModal')">Batal</button>
+    </div>
   </div>
 </div>
 
 <div class="modal" id="resetModal">
   <div class="modal-content">
     <h3>🔐 Reset Ujian</h3>
-    <p style="font-size:14px; margin:10px 0;">Masukkan password guru:</p>
+    <p style="font-size:14px; margin:10px 0;">Masukkan password guru untuk mereset sesi ini:</p>
     <input type="password" id="passwordGuru" placeholder="Password">
-    <button class="btn" onclick="konfirmasiReset()">Reset</button>
-    <button class="btn-cancel" onclick="tutupModal('resetModal')">Batal</button>
+    <div style="margin-top:15px;">
+      <button class="btn" onclick="konfirmasiReset()">Reset</button>
+      <button class="btn-cancel" onclick="tutupModal('resetModal')">Batal</button>
+    </div>
   </div>
 </div>
 
 <script>
 // ============ VERSI HTML ============
-const HTML_VERSION = "1.0";
+const HTML_VERSION = "4.0";
 
-// ============ KONFIGURASI DEFAULT ============
+// __CONFIG_START__
 const JUDUL_DEFAULT = "Evaluasi PKK DKV BAB 1";
 const SUBJUDUL_DEFAULT = "Kewirausahaan Produk Teknik Komputer dan Informatika";
 const PASSWORD_DEFAULT = "guru123";
-
+const TOKEN_DEFAULT = "DKV2024";
 const SOAL_DEFAULT = [
   {q:"Seorang wirausahawan komputer dan informatika didefinisikan sebagai seseorang yang memiliki usaha sendiri dalam bidang barang atau jasa, khususnya di dunia...", o:["Multimedia","Pertanian","Pertambangan","Perbankan","Kesehatan"], a:0},
   {q:"Faktor yang memengaruhi semangat kerja seorang wirausahawan, di mana terbukanya sebuah kesempatan dapat meningkatkan kinerjanya, disebut...", o:["Minat","Peluang","Relasi","Modal","Ambisi"], a:1},
@@ -513,67 +616,30 @@ const SOAL_DEFAULT = [
   {q:"Karakteristik wirausaha yang memiliki dorongan kuat, energik, memiliki ketekunan, dan berorientasi pada keuntungan disebut...", o:["Leadership","Profit oriented","Risk and challenge","Orisinal","Fleksibel"], a:1},
   {q:"Risiko yang tidak dapat diukur secara matematis dan sering dihadapi oleh pengusaha disebut risiko...", o:["Biasa","Murni","Ambigu","Sistematis","Terhindarkan"], a:2},
   {q:"Strategi awal dalam menjadi wirausaha dengan mencari pangsa pasar khusus yang kebutuhan utamanya belum terpenuhi oleh kompetitor disebut...", o:["Ekspansi pasar","Diversifikasi produk","Monopoli pasar","Mencari pasar khusus (niche market)","Penetrasi harga"], a:3},
-  {q:"Nilai etika yang harus dipegang oleh seorang wirausaha karena dapat menimbulkan respek dari konsumen dan membuat usaha bertahan lama adalah...", o:["Ambisius","Kompetitif","Agresif","Perfeksionis","Jujur"], a:4},
-  {q:"Seorang wirausaha jasa desain grafis selalu memperhatikan faktor-faktor kritis secara rinci dan tidak pernah mengabaikan hal-hal kecil. Karakteristik ini sesuai dengan identifikasi keberhasilan wirausaha yaitu...", o:["Details","Dream","Doers","Destiny","Dollars"], a:0},
-  {q:"Andi tidak mau menunda-nunda kesempatan baik dalam bisnisnya. Setiap kali membuat keputusan, ia langsung menindaklanjutinya secepat mungkin. Sikap Andi mencerminkan karakteristik...", o:["Dedication","Doers","Devotion","Distribute","Determination"], a:1},
-  {q:"Seorang wirausaha yang mencintai pekerjaan bisnisnya dan produk yang dihasilkannya, sehingga hal tersebut mendorong keberhasilan yang sangat efektif untuk menjual produknya, memiliki karakteristik...", o:["Dream","Details","Devotion","Destiny","Dollars"], a:2},
-  {q:"Budi menganggap uang bukan sebagai motivasi utama, melainkan sebagai ukuran kesuksesan bisnisnya. Ia berasumsi bahwa laba dan bonus pantas didapatkannya apabila berhasil. Karakteristik ini disebut...", o:["Dream","Doers","Determination","Dollars","Distribute"], a:3},
-  {q:"Seorang wirausaha bersedia mendistribusikan kepemilikan bisnisnya pada orang-orang kepercayaannya, yaitu orang-orang kritis dan inovatif. Hal ini merupakan karakteristik...", o:["Destiny","Details","Devotion","Dedication","Distribute"], a:4},
-  {q:"Proses membuat sesuatu dari tidak ada menjadi ada merupakan tipe kreativitas...", o:["Menciptakan","Memodifikasi","Mengombinasikan","Mengadaptasi","Mengimpor"], a:0},
-  {q:"Aktivitas mengombinasikan dua hal atau lebih yang sebelumnya tidak saling berhubungan merupakan tipe kreativitas...", o:["Menciptakan","Mengombinasikan","Memodifikasi","Menggandakan","Meniru"], a:1},
-  {q:"Hambatan kreativitas wirausaha yang disebabkan oleh adanya ketentuan atau karakteristik tertentu untuk suatu hal, sehingga membatasi cara pandang dan persepsi terhadap kemungkinan lain, disebut...", o:["Probabilitas","Pesimisme","Stereotip","Inkubasi","Determinasi"], a:2},
-  {q:"Masa di mana ide bisnis yang cocok dibiarkan mengendap dahulu agar makin matang sebelum dibuat rencana, disebut masa...", o:["Eksekusi","Evaluasi","Ekspansi","Inkubasi","Eliminasi"], a:3},
-  {q:"Unsur penunjang bekerja efektif dan efisien yang berarti hemat dalam menggunakan waktu, tenaga, dan biaya adalah...", o:["Ketepatan","Kecermatan","Kecepatan","Keselamatan","Penghematan"], a:4},
-  {q:"Jika seorang wirausaha produk multimedia mengalami kegagalan karena aliran kas yang tidak teratur dan penghamburan dana operasional, faktor penyebab kegagalan yang paling dominan adalah...", o:["Kurang mampu dalam mengendalikan keuangan","Kurangnya pengawasan peralatan","Tidak kompeten dalam manajerial","Gagal dalam sebuah perencanaan","Lokasi yang kurang memadai"], a:0},
-  {q:"Seorang wirausaha muda merasa usahanya stagnan karena ia hanya menunggu konsumen datang tanpa mencari tahu tren terbaru. Sikap yang harus diubah agar usahanya maju adalah...", o:["Menghindari kata-kata yang mematahkan semangat","Peka terhadap tren terbaru dan berani memulainya","Mengeksplorasi kelemahan kompetitor","Mencari pasar khusus yang belum tergarap","Segera mengimplementasi ide menjadi tindakan"], a:1},
-  {q:"Perbedaan mendasar antara pendidikan wiraswasta dan wirausaha menurut teks sumber adalah...", o:["Wiraswasta menekankan FQ, sedangkan wirausaha menekankan EQ","Wiraswasta hanya untuk survival, sedangkan wirausaha tidak","Wiraswasta lebih menekankan EQ dan AQ, sedangkan wirausaha menekankan FQ","Wirausaha tidak memerlukan kecerdasan finansial","Keduanya memiliki persepsi yang sama persis"], a:2},
-  {q:"Jenis risiko yang paling sering dihadapi pengusaha saat mengeluarkan produk baru yang belum ada di pasaran adalah...", o:["Risiko biasa","Risiko terukur","Risiko matematis","Ketidakpastian murni","Risiko terhindarkan"], a:3},
-  {q:"Untuk mengidentifikasi kekurangan dan kelemahan kompetitor, langkah strategis yang paling tepat dilakukan oleh wirausaha adalah...", o:["Meniru seluruh produk kompetitor","Menurunkan harga secara drastis","Mengabaikan keluhan konsumen","Menutup akses informasi dari pasar","Mengeksplorasi kelemahan kompetitor dengan mendengarkan komplain konsumen"], a:4},
-  {q:"Sikap wirausaha yang selalu berani mengambil risiko dan tidak cepat puas, sehingga terus menciptakan peluang-peluang baru, mencerminkan prinsip...", o:["Berani mengambil risiko","Bersikap fleksibel","Mengenal bisnis","Mengakui kesalahan","Bersikap jujur"], a:0},
-  {q:"Seorang wirausaha desain web mengakui bahwa desain yang ia buat memiliki kesalahan navigasi dan segera memperbaikinya. Sikap ini menunjukkan karakteristik wirausaha tangguh, yaitu...", o:["Optimis dengan masa depan","Mengakui jika memiliki kesalahan","Memiliki gairah dalam wirausaha","Bersikap fleksibel","Berusaha mengenal bisnis"], a:1},
-  {q:"Sifat pesimis pada seorang wirausaha sangat berbahaya karena...", o:["Membuatnya terlalu berani mengambil risiko","Membuatnya terlalu cepat dalam mengambil keputusan","Berkaitan erat dengan fokus seseorang akan kegagalan, sehingga membuyarkan rencana","Membuatnya terlalu fokus pada keuntungan finansial","Membuatnya terlalu bergantung pada orang lain"], a:2},
-  {q:"Kreativitas para calon wirausaha dapat ditingkatkan dengan cara pandang yang statis terhadap lingkungan yang telah ada untuk mengenali hubungan yang baru dan berbeda. Hal ini disebut...", o:["Menggunakan akal","Menghapus perasaan ragu-ragu","Mengembangkan perspektif fungsional","Mengenali lingkungan","Menciptakan peluang"], a:3},
-  {q:"Ciri-ciri orang yang memiliki motif berprestasi tinggi dalam wirausaha, kecuali...", o:["Berani menghadapi risiko dengan penuh perhitungan","Menyukai tantangan dan melihat tantangan secara seimbang","Ingin mengatasi sendiri kesulitan dan persoalan","Memiliki tanggung jawab personal yang tinggi","Menghindari umpan balik untuk menjaga perasaan"], a:4},
-  {q:"Sebuah studio animasi baru gagal dalam perencanaan bisnisnya, sehingga kesulitan dalam pelaksanaan operasional. Berdasarkan materi, faktor penyebab kegagalan ini termasuk dalam kategori...", o:["Gagal dalam sebuah perencanaan","Ketidakmampuan dalam melakukan transisi kewirausahaan","Kurangnya pengawasan peralatan","Tidak kompeten dalam manajerial","Sikap yang kurang sungguh-sungguh"], a:0},
-  {q:"Rina memiliki ide bisnis jasa foto yang bagus, tetapi ia terus-menerus ragu-ragu dan takut idenya dicuri orang lain, sehingga tidak pernah memulai. Hambatan mental buruk yang dialami Rina adalah...", o:["Pemikiran kemungkinan (probabilitas)","Adanya perasaan ragu-ragu terhadap pemikiran ide-ide positif","Stereotip terhadap kesuksesan","Pemikiran lain yang pesimis","Kecenderungan menghindari risiko"], a:1},
-  {q:"Seorang wirausaha percetakan digital mengalami penurunan omzet karena lokasi usahanya berada di gang sempit yang sulit dijangkau kendaraan pelanggan. Faktor kegagalan yang paling tepat adalah...", o:["Kurang berpengalaman dalam kemampuan teknik","Tidak kompeten dalam manajerial","Lokasi yang kurang memadai","Gagal dalam sebuah perencanaan","Kurang mampu mengendalikan keuangan"], a:2},
-  {q:"Dalam konteks karakteristik wirausaha (10 D's), 'Destiny' berarti...", o:["Seorang wirausaha mempunyai ambisi terhadap masa depan","Seorang wirausaha melaksanakan kegiatannya dengan teguh","Seorang wirausaha bertanggung jawab terhadap nasib dan tujuan yang hendak dicapai","Seorang wirausaha sangat memperhatikan faktor-faktor kritis secara rinci","Seorang wirausaha mencintai pekerjaan bisnisnya"], a:3},
-  {q:"Seorang wirausaha muda berhasil karena ia mampu melihat teman-temannya sebagai alat untuk memenuhi keinginannya dan membantu menyelesaikan pekerjaannya. Perspektif ini merupakan bagian dari...", o:["Menggunakan akal","Menghapus perasaan ragu-ragu","Mengenali lingkungan","Mengembangkan perspektif fungsional","Menerima perbedaan"], a:4},
-  {q:"Seorang wirausaha jasa video shooting selalu menunda pengambilan keputusan karena menunggu kondisi yang 'sempurna', sehingga kehilangan momen pasar. Karakteristik yang kurang ia miliki adalah...", o:["Decisiveness","Determination","Dedication","Devotion","Details"], a:0},
-  {q:"Budi menjalankan usaha sablon kaos. Ia bekerja tanpa mengenal lelah dan semua perhatiannya dipusatkan semata-mata untuk kegiatan bisnisnya. Identifikasi keberhasilan ini adalah...", o:["Dream","Dedication","Destiny","Dollars","Distribute"], a:1},
-  {q:"Sebuah agensi desain grafis gagal karena manajernya tidak mampu mengoordinasikan operasi dan mengelola SDM dengan baik. Faktor kegagalan ini adalah...", o:["Sikap yang kurang sungguh-sungguh","Tidak kompeten dalam manajerial","Kurang berpengalaman baik dalam kemampuan teknik","Kurang mampu dalam mengendalikan keuangan","Ketidakmampuan dalam melakukan transisi kewirausahaan"], a:2},
-  {q:"Seorang wirausaha memiliki ambisi besar terhadap masa depan bisnisnya dan mempunyai kemampuan untuk mewujudkan impiannya tersebut. Identifikasi keberhasilan ini disebut...", o:["Doers","Decisiveness","Determination","Dream","Devotion"], a:3},
-  {q:"Dalam menghadapi pesaing, seorang wirausaha tidak langsung meniru, tetapi mendengarkan keluhan konsumen pesaing untuk menemukan celah perbaikan. Strategi ini merupakan penerapan dari...", o:["Mencari pasar khusus yang belum tergarap","Peka terhadap tren terbaru","Segera mengimplementasi ide","Menghindari kata-kata yang mematahkan semangat","Eksplorasikan kelemahan kompetitor"], a:4},
-  {q:"Mengapa kecerdasan adversitas (AQ) lebih ditekankan dalam pendidikan wiraswasta dibandingkan wirausaha murni?", o:["Karena AQ berperan untuk hidup dan menghadapi tantangan hidup serta kehidupan, membentuk mental baja","Karena AQ hanya berfokus pada perhitungan laba rugi","Karena AQ tidak memerlukan kecerdasan emosional","Karena AQ lebih mengutamakan kemandirian finansial","Karena AQ menjamin keberhasilan bisnis tanpa risiko"], a:0},
-  {q:"Pernyataan yang paling tepat menggambarkan hubungan antara 'Risk and challenge' dan 'Fleksibel' dalam karakteristik wirausaha adalah...", o:["Berani mengambil risiko berarti tidak perlu fleksibel","Berani mengambil risiko membutuhkan sikap fleksibel agar dapat bertahan dan mencari solusi terbaik","Fleksibel berarti menghindari semua bentuk risiko","Risk and challenge hanya berlaku untuk wirausaha besar","Tidak ada hubungan antara keduanya"], a:1},
-  {q:"Seorang wirausaha harus menghindari kebiasaan mental buruk 'Pemikiran Kemungkinan (Probabilitas)' secara berlebihan karena...", o:["Akan membuat wirausaha terlalu cepat dalam mengambil keputusan","Akan membuat wirausaha terlalu kreatif","Akan menghambat seseorang dalam menghadapi kenyataan dan kehilangan kesempatan","Akan membuat wirausaha terlalu bergantung pada stereotip","Akan menghilangkan rasa tanggung jawab personal"], a:2},
-  {q:"Unsur penunjang bekerja efektif dan efisien yang berarti 'tepat dalam membuat rencana, menentukan sasaran, memilih, dan menggunakan metode' adalah...", o:["Kecermatan","Kecepatan","Penghematan","Ketepatan","Keselamatan"], a:3},
-  {q:"Analisis kekuatan, kelemahan, peluang, dan ancaman (SWOT) dalam perencanaan bekerja efektif dan efisien termasuk dalam tahap...", o:["Masa inkubasi","Sasaran jelas, realistis, dan menggairahkan","Implementasi ide","Evaluasi pasca-usaha","Analisis sumber perencanaan"], a:4},
-  {q:"Sifat wirausaha yang 'melihat segala sesuatu dengan cara yang tidak biasa' dan 'menerima serta menyesuaikan yang kelihatannya berlawanan' merupakan ciri dari manusia yang...", o:["Kreatif","Stereotip","Pesimis","Konvensional","Pasif"], a:0},
-  {q:"Jika seorang wirausaha menganggap laba, bonus, dan hadiah pantas didapatkannya apabila berhasil, namun uang bukan motivasi utama melainkan ukuran kesuksesan, ini adalah penjelasan dari karakteristik...", o:["Dream","Dollars","Destiny","Distribute","Details"], a:1},
-  {q:"Tindakan wirausaha yang melaksanakan kegiatannya dengan teguh dan tidak menyerah walaupun menghadapi rintangan, merupakan identifikasi keberhasilan berupa...", o:["Dream","Doers","Determination","Devotion","Dollars"], a:2},
-  {q:"Salah satu cara mengasah persepsi terhadap ketidakpastian dan kemampuan menanggung risiko adalah dengan menyadari bahwa...", o:["Risiko harus dihindari sepenuhnya","Ketidakpastian murni dapat diukur secara matematis","Wirausahawan memiliki tingkat efisiensi lebih rendah","Risiko yang diambil tidak berarti jika dibandingkan dengan keuntungan yang diperoleh","Hanya manajer biasa yang mampu mengambil keputusan"], a:3},
-  {q:"Bekerja efektif dan efisien berarti mencapai hasil sesuai rencana dengan pengorbanan sekecil mungkin. Unsur yang berarti 'dapat menyelesaikan pekerjaan dengan selamat sehingga tidak terjadi risiko yang harus ditanggung dan dibiayai' adalah...", o:["Ketepatan","Kecermatan","Kecepatan","Penghematan","Keselamatan"], a:4}
+  {q:"Nilai etika yang harus dipegang oleh seorang wirausaha karena dapat menimbulkan respek dari konsumen dan membuat usaha bertahan lama adalah...", o:["Ambisius","Kompetitif","Agresif","Perfeksionis","Jujur"], a:4}
 ];
+// __CONFIG_END__
+
+// __RUNTIME_CONFIG_START__
+let configDurasi = parseInt(localStorage.getItem('configDurasi') || '30');
+let configJumlahSoal = parseInt(localStorage.getItem('configJumlahSoal') || '0');
+let configAcak = localStorage.getItem('configAcak') === 'true';
+let configAcakOpsi = localStorage.getItem('configAcakOpsi') === 'true';
+let configMaxPelanggaran = parseInt(localStorage.getItem('configMaxPelanggaran') || '5');
+// __RUNTIME_CONFIG_END__
 
 // ============ VERSION CHECK ============
 const savedVersion = localStorage.getItem('htmlVersion');
 if (savedVersion !== HTML_VERSION) {
-  localStorage.removeItem('configJudul');
-  localStorage.removeItem('configSubJudul');
-  localStorage.removeItem('configPassword');
-  localStorage.removeItem('configDurasi');
-  localStorage.removeItem('configAcak');
-  localStorage.removeItem('soalAktif');
+  ['configJudul','configSubJudul','configPassword','configToken','configDurasi','configJumlahSoal','configAcak','configAcakOpsi','configMaxPelanggaran','soalAktif'].forEach(k => localStorage.removeItem(k));
   localStorage.setItem('htmlVersion', HTML_VERSION);
 }
 
 // ============ LOAD KONFIGURASI ============
 let configJudul = localStorage.getItem('configJudul') || JUDUL_DEFAULT;
 let configSubJudul = localStorage.getItem('configSubJudul') || SUBJUDUL_DEFAULT;
+let configToken = localStorage.getItem('configToken') || TOKEN_DEFAULT;
 let PASSWORD_GURU = localStorage.getItem('configPassword') || PASSWORD_DEFAULT;
-let configDurasi = parseInt(localStorage.getItem('configDurasi') || '30');
-let configAcak = localStorage.getItem('configAcak') === 'true';
 let soalAktif = JSON.parse(localStorage.getItem('soalAktif') || 'null') || SOAL_DEFAULT;
 
 // ============ VARIABEL UJIAN ============
@@ -584,23 +650,38 @@ let jawaban = JSON.parse(localStorage.getItem('jawaban') || '{}');
 let dataSiswa = JSON.parse(localStorage.getItem('dataSiswa') || 'null');
 let pelanggaran = JSON.parse(localStorage.getItem('pelanggaran') || '[]');
 let jumlahPelanggaran = parseInt(localStorage.getItem('jumlahPelanggaran') || '0');
-const MAX_PELANGGARAN = 5;
+let maxPelanggaranUjian = configMaxPelanggaran; // Diset saat mulai ujian
 let isFullscreenActive = false;
 let soalUrutan = [];
-let isPasswordVisible = false;
+let urutanOpsiPerSoal = JSON.parse(localStorage.getItem('urutanOpsiPerSoal') || '{}');
+let waktuJawaban = JSON.parse(localStorage.getItem('waktuJawaban') || '{}');
 
-// ============ FUNGSI UPDATE JUDUL ============
+// ============ DARK MODE ============
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  localStorage.setItem('darkMode', isDark);
+  document.querySelector('.dark-mode-toggle').innerText = isDark ? '☀️' : '🌙';
+  // FIX: Re-render watermark saat dark mode berubah
+  if (statusUjian === 'berlangsung' && dataSiswa) {
+    buatWatermark(dataSiswa.nama, dataSiswa.nomor, dataSiswa.kelas);
+  }
+}
+
+// ============ UPDATE UI ============
 function updateJudulDiSemuaTempat() {
   document.title = configJudul;
   document.getElementById('judulUtama').innerText = configJudul;
   document.getElementById('subJudul').innerText = configSubJudul;
   const previewJudul = document.getElementById('previewJudulUtama');
   const previewSub = document.getElementById('previewSubJudul');
+  const previewTok = document.getElementById('previewToken');
   if (previewJudul) previewJudul.innerText = configJudul;
   if (previewSub) previewSub.innerText = configSubJudul;
+  if (previewTok) previewTok.innerText = configToken;
 }
 
-// ============ NAVIGASI MENU ============
+// ============ NAVIGASI ============
 function bukaFormSiswa() {
   document.getElementById('menuAwal').style.display = 'none';
   document.getElementById('identityForm').style.display = 'block';
@@ -620,12 +701,8 @@ function bukaLoginGuru() {
 
 function prosesLogin() {
   const pwd = document.getElementById('passwordLogin').value;
-  if (pwd === PASSWORD_GURU) {
-    tutupModal('loginModal');
-    bukaDashboard();
-  } else {
-    alert('❌ Password salah!');
-  }
+  if (pwd === PASSWORD_GURU) { tutupModal('loginModal'); bukaDashboard(); }
+  else { alert('❌ Password salah!'); }
 }
 
 function bukaDashboard() {
@@ -644,61 +721,64 @@ function keluarDashboard() {
 function loadDashboardData() {
   document.getElementById('inputJudul').value = configJudul;
   document.getElementById('inputSubJudul').value = configSubJudul;
+  document.getElementById('inputToken').value = configToken;
   document.getElementById('previewJudulUtama').innerText = configJudul;
   document.getElementById('previewSubJudul').innerText = configSubJudul;
+  document.getElementById('previewToken').innerText = configToken;
   updatePasswordDisplay();
   document.getElementById('inputWaktu').value = configDurasi;
-  document.getElementById('statusWaktu').innerHTML = `<div class="alert-success">✅ Waktu saat ini: <strong>${configDurasi} menit</strong></div>`;
+  document.getElementById('inputJumlahSoal').value = configJumlahSoal;
+  document.getElementById('inputMaxPelanggaran').value = configMaxPelanggaran;
+  document.getElementById('statusWaktu').innerHTML = `<div class="alert-success">✅ Waktu: <strong>${configDurasi} menit</strong> | Soal: <strong>${configJumlahSoal === 0 ? 'Semua' : configJumlahSoal}</strong></div>`;
   document.getElementById('toggleAcak').checked = configAcak;
+  document.getElementById('toggleAcakOpsi').checked = configAcakOpsi;
   updateStatusAcak();
+  updateStatusAcakOpsi();
   document.getElementById('jumlahSoalSaatIni').innerText = soalAktif.length;
   document.getElementById('versionBadge').innerText = 'v' + HTML_VERSION;
   document.getElementById('currentVersionDisplay').innerText = 'v' + HTML_VERSION;
 }
 
-// ============ FITUR 1: EDIT JUDUL ============
+// ============ FITUR 1: JUDUL & TOKEN ============
 function simpanJudul() {
   const judul = document.getElementById('inputJudul').value.trim();
   const subJudul = document.getElementById('inputSubJudul').value.trim();
-  if (!judul) {
-    document.getElementById('statusJudul').innerHTML = `<div class="alert-error">❌ Judul utama tidak boleh kosong!</div>`;
+  const token = document.getElementById('inputToken').value.trim();
+  if (!judul || !token) {
+    document.getElementById('statusJudul').innerHTML = `<div class="alert-error">❌ Judul dan Token tidak boleh kosong!</div>`;
     return;
   }
-  configJudul = judul;
-  configSubJudul = subJudul;
+  configJudul = judul; configSubJudul = subJudul; configToken = token;
   localStorage.setItem('configJudul', configJudul);
   localStorage.setItem('configSubJudul', configSubJudul);
-  document.getElementById('previewJudulUtama').innerText = configJudul;
-  document.getElementById('previewSubJudul').innerText = configSubJudul;
+  localStorage.setItem('configToken', configToken);
   updateJudulDiSemuaTempat();
-  document.getElementById('statusJudul').innerHTML = `<div class="alert-success">✅ Judul berhasil disimpan. Klik "💾 Download HTML Terbaru" di Panel 7 agar permanen!</div>`;
+  document.getElementById('statusJudul').innerHTML = `<div class="alert-success">✅ Berhasil disimpan. Klik "Download HTML Terbaru" di Panel 8!</div>`;
 }
 
 function resetJudul() {
-  if (!confirm('Yakin ingin mengembalikan judul ke default?')) return;
-  configJudul = JUDUL_DEFAULT;
-  configSubJudul = SUBJUDUL_DEFAULT;
+  if (!confirm('Yakin ingin mengembalikan ke default?')) return;
+  configJudul = JUDUL_DEFAULT; configSubJudul = SUBJUDUL_DEFAULT; configToken = TOKEN_DEFAULT;
   localStorage.setItem('configJudul', configJudul);
   localStorage.setItem('configSubJudul', configSubJudul);
+  localStorage.setItem('configToken', configToken);
   document.getElementById('inputJudul').value = configJudul;
   document.getElementById('inputSubJudul').value = configSubJudul;
-  document.getElementById('previewJudulUtama').innerText = configJudul;
-  document.getElementById('previewSubJudul').innerText = configSubJudul;
+  document.getElementById('inputToken').value = configToken;
   updateJudulDiSemuaTempat();
-  document.getElementById('statusJudul').innerHTML = `<div class="alert-success">✅ Judul berhasil direset ke default</div>`;
+  document.getElementById('statusJudul').innerHTML = `<div class="alert-success">✅ Direset ke default</div>`;
 }
 
-// ============ FITUR 2: UBAH PASSWORD ============
+// ============ FITUR 2: PASSWORD ============
 function togglePwd(inputId) {
   const input = document.getElementById(inputId);
   input.type = input.type === 'password' ? 'text' : 'password';
 }
 
 function toggleDisplayPassword() {
-  isPasswordVisible = !isPasswordVisible;
   const display = document.getElementById('displayPassword');
   const btn = document.getElementById('btnTogglePwd');
-  if (isPasswordVisible) {
+  if (display.innerText === '••••••••') {
     display.innerText = PASSWORD_GURU;
     btn.innerText = '🙈 Sembunyikan';
   } else {
@@ -710,84 +790,74 @@ function toggleDisplayPassword() {
 function updatePasswordDisplay() {
   document.getElementById('displayPassword').innerText = '••••••••';
   document.getElementById('btnTogglePwd').innerText = '👁️ Lihat';
-  isPasswordVisible = false;
 }
 
 function checkPasswordStrength() {
   const pwd = document.getElementById('pwdBaru').value;
-  const strengthDiv = document.getElementById('pwdStrength');
-  if (!pwd) { strengthDiv.innerHTML = ''; return; }
+  const div = document.getElementById('pwdStrength');
+  if (!pwd) { div.innerHTML = ''; return; }
   let score = 0;
   if (pwd.length >= 4) score++;
   if (pwd.length >= 8) score++;
   if (/[A-Z]/.test(pwd)) score++;
   if (/[0-9]/.test(pwd)) score++;
-  if (/[^A-Za-z0-9]/.test(pwd)) score++;
-  if (score <= 1) strengthDiv.innerHTML = '<span class="strength-weak">🔴 Lemah</span>';
-  else if (score <= 3) strengthDiv.innerHTML = '<span class="strength-medium">🟡 Sedang</span>';
-  else strengthDiv.innerHTML = '<span class="strength-strong">🟢 Kuat</span>';
+  if (score <= 1) div.innerHTML = '<span style="color:#dc2626;">🔴 Lemah</span>';
+  else if (score <= 3) div.innerHTML = '<span style="color:#f59e0b;">🟡 Sedang</span>';
+  else div.innerHTML = '<span style="color:#16a34a;">🟢 Kuat</span>';
 }
 
 function ubahPassword() {
   const pwdLama = document.getElementById('pwdLama').value;
   const pwdBaru = document.getElementById('pwdBaru').value;
   const pwdKonfirmasi = document.getElementById('pwdKonfirmasi').value;
-  if (pwdLama !== PASSWORD_GURU) {
-    document.getElementById('statusPassword').innerHTML = `<div class="alert-error">❌ Password lama salah!</div>`;
-    return;
-  }
-  if (!pwdBaru || pwdBaru.length < 4) {
-    document.getElementById('statusPassword').innerHTML = `<div class="alert-error">❌ Password baru minimal 4 karakter!</div>`;
-    return;
-  }
-  if (pwdBaru !== pwdKonfirmasi) {
-    document.getElementById('statusPassword').innerHTML = `<div class="alert-error">❌ Konfirmasi password tidak cocok!</div>`;
-    return;
-  }
-  if (pwdBaru === pwdLama) {
-    document.getElementById('statusPassword').innerHTML = `<div class="alert-error">❌ Password baru tidak boleh sama dengan password lama!</div>`;
-    return;
-  }
+  if (pwdLama !== PASSWORD_GURU) { document.getElementById('statusPassword').innerHTML = `<div class="alert-error">❌ Password lama salah!</div>`; return; }
+  if (!pwdBaru || pwdBaru.length < 4) { document.getElementById('statusPassword').innerHTML = `<div class="alert-error">❌ Minimal 4 karakter!</div>`; return; }
+  if (pwdBaru !== pwdKonfirmasi) { document.getElementById('statusPassword').innerHTML = `<div class="alert-error">❌ Konfirmasi tidak cocok!</div>`; return; }
   PASSWORD_GURU = pwdBaru;
   localStorage.setItem('configPassword', PASSWORD_GURU);
-  document.getElementById('pwdLama').value = '';
-  document.getElementById('pwdBaru').value = '';
-  document.getElementById('pwdKonfirmasi').value = '';
+  document.getElementById('pwdLama').value = ''; document.getElementById('pwdBaru').value = ''; document.getElementById('pwdKonfirmasi').value = '';
   document.getElementById('pwdStrength').innerHTML = '';
   updatePasswordDisplay();
-  document.getElementById('statusPassword').innerHTML = `<div class="alert-success">✅ Password berhasil diubah! Klik "💾 Download HTML Terbaru" di Panel 7 agar permanen!</div>`;
+  document.getElementById('statusPassword').innerHTML = `<div class="alert-success">✅ Password berhasil diubah!</div>`;
 }
 
 function resetPasswordDefault() {
-  if (!confirm('Yakin ingin mengembalikan password ke default ("guru123")?')) return;
+  if (!confirm('Yakin ingin reset password ke "guru123"?')) return;
   PASSWORD_GURU = PASSWORD_DEFAULT;
   localStorage.setItem('configPassword', PASSWORD_DEFAULT);
-  document.getElementById('pwdLama').value = '';
-  document.getElementById('pwdBaru').value = '';
-  document.getElementById('pwdKonfirmasi').value = '';
-  document.getElementById('pwdStrength').innerHTML = '';
+  document.getElementById('pwdLama').value = ''; document.getElementById('pwdBaru').value = ''; document.getElementById('pwdKonfirmasi').value = '';
   updatePasswordDisplay();
-  document.getElementById('statusPassword').innerHTML = `<div class="alert-success">✅ Password berhasil direset ke default: <strong>guru123</strong></div>`;
+  document.getElementById('statusPassword').innerHTML = `<div class="alert-success">✅ Password direset ke: <strong>guru123</strong></div>`;
 }
 
-// ============ FITUR 3: SETEL WAKTU ============
+// ============ FITUR 3: WAKTU & JUMLAH SOAL ============
 function simpanWaktu() {
   const waktu = parseInt(document.getElementById('inputWaktu').value);
   if (isNaN(waktu) || waktu < 1 || waktu > 180) {
-    document.getElementById('statusWaktu').innerHTML = `<div class="alert-error">❌ Waktu harus antara 1 - 180 menit!</div>`;
-    return;
+    document.getElementById('statusWaktu').innerHTML = `<div class="alert-error">❌ Waktu harus 1 - 180 menit!</div>`; return;
   }
   configDurasi = waktu;
   localStorage.setItem('configDurasi', configDurasi);
-  document.getElementById('statusWaktu').innerHTML = `<div class="alert-success">✅ Waktu berhasil diubah menjadi <strong>${configDurasi} menit</strong>. Klik "💾 Download HTML Terbaru" di Panel 7!</div>`;
+  document.getElementById('statusWaktu').innerHTML = `<div class="alert-success">✅ Waktu disimpan: <strong>${configDurasi} menit</strong></div>`;
+  updateInfoWaktu();
+}
+
+function simpanJumlahSoal() {
+  const jml = parseInt(document.getElementById('inputJumlahSoal').value);
+  if (isNaN(jml) || jml < 0) {
+    document.getElementById('statusWaktu').innerHTML = `<div class="alert-error">❌ Jumlah soal tidak valid!</div>`; return;
+  }
+  configJumlahSoal = jml;
+  localStorage.setItem('configJumlahSoal', configJumlahSoal);
+  document.getElementById('statusWaktu').innerHTML = `<div class="alert-success">✅ Jumlah soal: <strong>${configJumlahSoal === 0 ? 'Semua' : configJumlahSoal}</strong></div>`;
   updateInfoWaktu();
 }
 
 function updateInfoWaktu() {
   const infoBox = document.getElementById('infoWaktu');
-  if (infoBox) {
-    infoBox.innerHTML = `⏰ Waktu: <strong>${configDurasi} menit</strong> | Tidak bisa dikumpulkan sebelum waktu habis`;
-  }
+  if (infoBox) infoBox.innerHTML = `⏰ Waktu: <strong>${configDurasi} menit</strong> | Soal: <strong>${configJumlahSoal === 0 ? 'Semua' : configJumlahSoal}</strong>`;
+  const maxInfo = document.getElementById('maxPelanggaranInfo');
+  if (maxInfo) maxInfo.innerText = configMaxPelanggaran;
 }
 
 // ============ FITUR 4: IMPORT EXCEL ============
@@ -828,12 +898,11 @@ function importExcel(event) {
         soalBaru.push({q: pertanyaan, o: [opsiA, opsiB, opsiC, opsiD, opsiE], a: idxJawaban});
       }
       if (soalBaru.length === 0) {
-        document.getElementById('statusImport').innerHTML = `<div class="alert-error">❌ Tidak ada soal valid yang ditemukan.</div>`;
-        return;
+        document.getElementById('statusImport').innerHTML = `<div class="alert-error">❌ Tidak ada soal valid.</div>`; return;
       }
       soalAktif = soalBaru;
       localStorage.setItem('soalAktif', JSON.stringify(soalAktif));
-      document.getElementById('statusImport').innerHTML = `<div class="alert-success">✅ Berhasil mengimport <strong>${soalBaru.length} soal</strong>. Klik "💾 Download HTML Terbaru" di Panel 7!</div>`;
+      document.getElementById('statusImport').innerHTML = `<div class="alert-success">✅ Berhasil import <strong>${soalBaru.length} soal</strong>.</div>`;
       document.getElementById('jumlahSoalSaatIni').innerText = soalAktif.length;
       tampilkanPreview(soalBaru);
     } catch (err) {
@@ -849,9 +918,9 @@ function tampilkanPreview(soal) {
   for (let i = 0; i < maxPreview; i++) {
     const s = soal[i];
     const jawabanHuruf = String.fromCharCode(65 + s.a);
-    html += `<div class="preview-item"><strong>${i+1}.</strong> ${s.q.substring(0, 80)}... <em>[Jawaban: ${jawabanHuruf}]</em></div>`;
+    html += `<div class="preview-item"><strong>${i+1}.</strong> ${s.q.substring(0, 60)}... <em>[Jawaban: ${jawabanHuruf}]</em></div>`;
   }
-  if (soal.length > maxPreview) html += `<div class="preview-item" style="color:#6b7280;">... dan ${soal.length - maxPreview} soal lainnya</div>`;
+  if (soal.length > maxPreview) html += `<div class="preview-item" style="color:var(--text-secondary);">... dan ${soal.length - maxPreview} soal lainnya</div>`;
   html += `</div>`;
   document.getElementById('previewSoal').innerHTML = html;
 }
@@ -860,8 +929,7 @@ function downloadTemplate() {
   const templateData = [
     ['Pertanyaan', 'Opsi A', 'Opsi B', 'Opsi C', 'Opsi D', 'Opsi E', 'Jawaban Benar'],
     ['Ibu kota Indonesia adalah...', 'Jakarta', 'Bandung', 'Surabaya', 'Medan', 'Bali', 'A'],
-    ['2 + 2 = ...', '3', '4', '5', '6', '7', 'B'],
-    ['Warna langit saat cerah...', 'Merah', 'Hijau', 'Biru', 'Kuning', 'Ungu', 'C']
+    ['2 + 2 = ...', '3', '4', '5', '6', '7', 'B']
   ];
   const ws = XLSX.utils.aoa_to_sheet(templateData);
   const wb = XLSX.utils.book_new();
@@ -870,30 +938,37 @@ function downloadTemplate() {
 }
 
 function resetSoalDefault() {
-  if (!confirm('Yakin ingin mengembalikan soal ke default (50 soal asli)?')) return;
+  if (!confirm('Yakin ingin mengembalikan soal ke default?')) return;
   soalAktif = SOAL_DEFAULT;
   localStorage.setItem('soalAktif', JSON.stringify(soalAktif));
   document.getElementById('jumlahSoalSaatIni').innerText = soalAktif.length;
   document.getElementById('previewSoal').innerHTML = '';
-  document.getElementById('statusImport').innerHTML = `<div class="alert-success">✅ Soal berhasil direset ke default (50 soal)</div>`;
+  document.getElementById('statusImport').innerHTML = `<div class="alert-success">✅ Soal direset ke default</div>`;
 }
 
-// ============ FITUR 5: ACAK SOAL ============
+// ============ FITUR 5: ACAK SOAL & OPSI ============
 function simpanAcak() {
   configAcak = document.getElementById('toggleAcak').checked;
   localStorage.setItem('configAcak', configAcak);
   updateStatusAcak();
 }
 
+function simpanAcakOpsi() {
+  configAcakOpsi = document.getElementById('toggleAcakOpsi').checked;
+  localStorage.setItem('configAcakOpsi', configAcakOpsi);
+  updateStatusAcakOpsi();
+}
+
 function updateStatusAcak() {
   const status = document.getElementById('statusAcak');
-  if (configAcak) {
-    status.innerText = 'AKTIF';
-    status.className = 'status-badge status-on';
-  } else {
-    status.innerText = 'NONAKTIF';
-    status.className = 'status-badge status-off';
-  }
+  if (configAcak) { status.innerText = 'AKTIF'; status.className = 'status-badge status-on'; }
+  else { status.innerText = 'NONAKTIF'; status.className = 'status-badge status-off'; }
+}
+
+function updateStatusAcakOpsi() {
+  const status = document.getElementById('statusAcakOpsi');
+  if (configAcakOpsi) { status.innerText = 'AKTIF'; status.className = 'status-badge status-on'; }
+  else { status.innerText = 'NONAKTIF'; status.className = 'status-badge status-off'; }
 }
 
 function acakArray(arr) {
@@ -905,25 +980,36 @@ function acakArray(arr) {
   return result;
 }
 
-// ============ FITUR 6: RESET DATA SISWA ============
+// ============ FITUR 6: BATAS PELANGGARAN (BARU!) ============
+function simpanMaxPelanggaran() {
+  const max = parseInt(document.getElementById('inputMaxPelanggaran').value);
+  if (isNaN(max) || max < 1 || max > 20) {
+    document.getElementById('statusMaxPelanggaran').innerHTML = `<div class="alert-error">❌ Batas harus antara 1 - 20!</div>`;
+    return;
+  }
+  configMaxPelanggaran = max;
+  localStorage.setItem('configMaxPelanggaran', configMaxPelanggaran);
+  document.getElementById('statusMaxPelanggaran').innerHTML = `<div class="alert-success">✅ Batas pelanggaran disimpan: <strong>${configMaxPelanggaran} kali</strong>. Klik "Download HTML Terbaru" di Panel 8 agar permanen!</div>`;
+  updateInfoWaktu();
+}
+
+function resetMaxPelanggaran() {
+  configMaxPelanggaran = 5;
+  localStorage.setItem('configMaxPelanggaran', 5);
+  document.getElementById('inputMaxPelanggaran').value = 5;
+  document.getElementById('statusMaxPelanggaran').innerHTML = `<div class="alert-success">✅ Batas pelanggaran direset ke: <strong>5 kali</strong></div>`;
+  updateInfoWaktu();
+}
+
+// ============ FITUR 7: RESET DATA SISWA ============
 function resetDataSiswa() {
   if (!confirm('Yakin ingin menghapus semua data siswa?')) return;
-  localStorage.removeItem('statusUjian');
-  localStorage.removeItem('waktuMulai');
-  localStorage.removeItem('jawaban');
-  localStorage.removeItem('dataSiswa');
-  localStorage.removeItem('pelanggaran');
-  localStorage.removeItem('jumlahPelanggaran');
-  localStorage.removeItem('nilai');
-  localStorage.removeItem('benar');
-  localStorage.removeItem('autoSubmit');
-  localStorage.removeItem('waktuSelesai');
-  localStorage.removeItem('soalUrutan');
+  ['statusUjian','waktuMulai','jawaban','dataSiswa','pelanggaran','jumlahPelanggaran','nilai','benar','autoSubmit','waktuSelesai','soalUrutan','urutanOpsiPerSoal','waktuJawaban'].forEach(k => localStorage.removeItem(k));
   document.getElementById('statusResetSiswa').innerHTML = `<div class="alert-success">✅ Semua data siswa berhasil dihapus</div>`;
   setTimeout(() => { document.getElementById('statusResetSiswa').innerHTML = ''; }, 3000);
 }
 
-// ============ FITUR 7: SIMPAN PERMANEN KE HTML (DIPERBAIKI!) ============
+// ============ FITUR 8: SIMPAN PERMANEN (DENGAN 2 MARKER BLOCK) ============
 function incrementVersion(v) {
   const parts = v.split('.').map(Number);
   parts[parts.length - 1]++;
@@ -931,133 +1017,69 @@ function incrementVersion(v) {
 }
 
 function simpanPermanenKeHTML() {
-  if (!confirm('File HTML baru akan didownload dengan semua perubahan saat ini.\n\nSetelah download:\n1. Ganti file HTML lama dengan yang baru\n2. Upload ke hosting\n3. Bagikan link baru ke siswa\n\nLanjutkan?')) return;
+  if (!confirm('File HTML baru akan didownload dengan semua perubahan saat ini.\n\nSetelah download, ganti file HTML lama di hosting dengan file baru ini.\n\nLanjutkan?')) return;
   
   try {
-    // ===== PERBAIKAN BUG: Reset UI ke kondisi awal SEBELUM ambil HTML =====
-    
-    // 1. Simpan state UI saat ini
     const savedState = {
       menuAwal: document.getElementById('menuAwal').style.display,
       identityForm: document.getElementById('identityForm').style.display,
       dashboardGuru: document.getElementById('dashboardGuru').style.display,
       quizArea: document.getElementById('quizArea').style.display,
       resultArea: document.getElementById('resultArea').style.display,
-      // Input values
-      inputJudul: document.getElementById('inputJudul').value,
-      inputSubJudul: document.getElementById('inputSubJudul').value,
-      inputWaktu: document.getElementById('inputWaktu').value,
-      pwdLama: document.getElementById('pwdLama').value,
-      pwdBaru: document.getElementById('pwdBaru').value,
-      pwdKonfirmasi: document.getElementById('pwdKonfirmasi').value,
-      passwordLogin: document.getElementById('passwordLogin').value,
-      passwordGuru: document.getElementById('passwordGuru').value,
-      // Status boxes
-      statusJudul: document.getElementById('statusJudul').innerHTML,
-      statusPassword: document.getElementById('statusPassword').innerHTML,
-      statusWaktu: document.getElementById('statusWaktu').innerHTML,
-      statusImport: document.getElementById('statusImport').innerHTML,
-      previewSoal: document.getElementById('previewSoal').innerHTML,
-      statusResetSiswa: document.getElementById('statusResetSiswa').innerHTML,
-      statusSimpanPermanen: document.getElementById('statusSimpanPermanen').innerHTML,
-      pwdStrength: document.getElementById('pwdStrength').innerHTML,
-      // Password display
-      displayPassword: document.getElementById('displayPassword').innerText,
-      btnTogglePwd: document.getElementById('btnTogglePwd').innerText,
-      // Modals
       loginModal: document.getElementById('loginModal').style.display,
       resetModal: document.getElementById('resetModal').style.display,
-      // Overlay
       violationOverlay: document.getElementById('violationOverlay').style.display,
     };
     
-    // 2. Reset UI ke kondisi awal (menuAwal visible, yang lain hidden)
     document.getElementById('menuAwal').style.display = 'block';
     document.getElementById('identityForm').style.display = 'none';
     document.getElementById('dashboardGuru').style.display = 'none';
     document.getElementById('quizArea').style.display = 'none';
     document.getElementById('resultArea').style.display = 'none';
-    document.getElementById('resultArea').innerHTML = '';
-    
-    // 3. Kosongkan semua input fields
-    document.getElementById('inputJudul').value = '';
-    document.getElementById('inputSubJudul').value = '';
-    document.getElementById('pwdLama').value = '';
-    document.getElementById('pwdBaru').value = '';
-    document.getElementById('pwdKonfirmasi').value = '';
-    document.getElementById('passwordLogin').value = '';
-    document.getElementById('passwordGuru').value = '';
-    document.getElementById('nama').value = '';
-    document.getElementById('nomor').value = '';
-    document.getElementById('kelas').value = '';
-    
-    // 4. Kosongkan status boxes
-    document.getElementById('statusJudul').innerHTML = '';
-    document.getElementById('statusPassword').innerHTML = '';
-    document.getElementById('statusImport').innerHTML = '';
-    document.getElementById('previewSoal').innerHTML = '';
-    document.getElementById('statusResetSiswa').innerHTML = '';
-    document.getElementById('statusSimpanPermanen').innerHTML = '';
-    document.getElementById('pwdStrength').innerHTML = '';
-    
-    // 5. Reset password display ke hidden
-    document.getElementById('displayPassword').innerText = '••••••••';
-    document.getElementById('btnTogglePwd').innerText = '👁️ Lihat';
-    
-    // 6. Tutup semua modal & overlay
     document.getElementById('loginModal').style.display = 'none';
     document.getElementById('resetModal').style.display = 'none';
     document.getElementById('violationOverlay').style.display = 'none';
     
-    // ===== AMBIL HTML YANG SUDAH DI-RESET =====
     let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
     
-    // ===== RESTORE STATE UI (agar guru tidak kehilangan konteks) =====
     document.getElementById('menuAwal').style.display = savedState.menuAwal;
     document.getElementById('identityForm').style.display = savedState.identityForm;
     document.getElementById('dashboardGuru').style.display = savedState.dashboardGuru;
     document.getElementById('quizArea').style.display = savedState.quizArea;
     document.getElementById('resultArea').style.display = savedState.resultArea;
-    document.getElementById('inputJudul').value = savedState.inputJudul;
-    document.getElementById('inputSubJudul').value = savedState.inputSubJudul;
-    document.getElementById('inputWaktu').value = savedState.inputWaktu;
-    document.getElementById('pwdLama').value = savedState.pwdLama;
-    document.getElementById('pwdBaru').value = savedState.pwdBaru;
-    document.getElementById('pwdKonfirmasi').value = savedState.pwdKonfirmasi;
-    document.getElementById('passwordLogin').value = savedState.passwordLogin;
-    document.getElementById('passwordGuru').value = savedState.passwordGuru;
-    document.getElementById('statusJudul').innerHTML = savedState.statusJudul;
-    document.getElementById('statusPassword').innerHTML = savedState.statusPassword;
-    document.getElementById('statusWaktu').innerHTML = savedState.statusWaktu;
-    document.getElementById('statusImport').innerHTML = savedState.statusImport;
-    document.getElementById('previewSoal').innerHTML = savedState.previewSoal;
-    document.getElementById('statusResetSiswa').innerHTML = savedState.statusResetSiswa;
-    document.getElementById('statusSimpanPermanen').innerHTML = savedState.statusSimpanPermanen;
-    document.getElementById('pwdStrength').innerHTML = savedState.pwdStrength;
-    document.getElementById('displayPassword').innerText = savedState.displayPassword;
-    document.getElementById('btnTogglePwd').innerText = savedState.btnTogglePwd;
     document.getElementById('loginModal').style.display = savedState.loginModal;
     document.getElementById('resetModal').style.display = savedState.resetModal;
     document.getElementById('violationOverlay').style.display = savedState.violationOverlay;
     
-    // ===== REPLACE KONFIGURASI DI HTML =====
     const newVersion = incrementVersion(HTML_VERSION);
     
-    html = html.replace(/const HTML_VERSION = "[^"]*";/, `const HTML_VERSION = "${newVersion}";`);
-    html = html.replace(/const JUDUL_DEFAULT = "[^"]*";/, `const JUDUL_DEFAULT = ${JSON.stringify(configJudul)};`);
-    html = html.replace(/const SUBJUDUL_DEFAULT = "[^"]*";/, `const SUBJUDUL_DEFAULT = ${JSON.stringify(configSubJudul)};`);
-    html = html.replace(/const PASSWORD_DEFAULT = "[^"]*";/, `const PASSWORD_DEFAULT = ${JSON.stringify(PASSWORD_GURU)};`);
-    html = html.replace(/const SOAL_DEFAULT = \[[\s\S]*?\];/, `const SOAL_DEFAULT = ${JSON.stringify(soalAktif)};`);
-    html = html.replace(/let configDurasi = parseInt\(localStorage\.getItem\('configDurasi'\) \|\| '[^']*'\);/, `let configDurasi = parseInt(localStorage.getItem('configDurasi') || '${configDurasi}');`);
-    html = html.replace(/let configAcak = localStorage\.getItem\('configAcak'\) === '[^']*';/, `let configAcak = localStorage.getItem('configAcak') === '${configAcak}';`);
+    // Ganti CONFIG block (konstanta default)
+    const newConfigBlock = `// __CONFIG_START__
+const JUDUL_DEFAULT = ${JSON.stringify(configJudul)};
+const SUBJUDUL_DEFAULT = ${JSON.stringify(configSubJudul)};
+const PASSWORD_DEFAULT = ${JSON.stringify(PASSWORD_GURU)};
+const TOKEN_DEFAULT = ${JSON.stringify(configToken)};
+const SOAL_DEFAULT = ${JSON.stringify(soalAktif)};
+// __CONFIG_END__`;
     
-    // ===== DOWNLOAD FILE =====
+    // Ganti RUNTIME_CONFIG block (variabel dengan default dari localStorage)
+    const newRuntimeConfigBlock = `// __RUNTIME_CONFIG_START__
+let configDurasi = parseInt(localStorage.getItem('configDurasi') || '${configDurasi}');
+let configJumlahSoal = parseInt(localStorage.getItem('configJumlahSoal') || '${configJumlahSoal}');
+let configAcak = localStorage.getItem('configAcak') === '${configAcak}';
+let configAcakOpsi = localStorage.getItem('configAcakOpsi') === '${configAcakOpsi}';
+let configMaxPelanggaran = parseInt(localStorage.getItem('configMaxPelanggaran') || '${configMaxPelanggaran}');
+// __RUNTIME_CONFIG_END__`;
+    
+    html = html.replace(/\/\/ __CONFIG_START__[\s\S]*?\/\/ __CONFIG_END__/, newConfigBlock);
+    html = html.replace(/\/\/ __RUNTIME_CONFIG_START__[\s\S]*?\/\/ __RUNTIME_CONFIG_END__/, newRuntimeConfigBlock);
+    html = html.replace(/const HTML_VERSION = "[^"]*";/, `const HTML_VERSION = "${newVersion}";`);
+    
     const blob = new Blob([html], {type: 'text/html;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    const namaFile = `ujian-pkk-dkv-v${newVersion}.html`;
-    a.download = namaFile;
+    a.download = `ujian-pkk-dkv-v${newVersion}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1066,18 +1088,12 @@ function simpanPermanenKeHTML() {
     document.getElementById('statusSimpanPermanen').innerHTML = `
       <div class="alert-success">
         ✅ <strong>File HTML berhasil didownload!</strong><br>
-        📄 Nama file: <strong>${namaFile}</strong><br>
-        🔢 Versi baru: <strong>v${newVersion}</strong><br><br>
-        <strong>Langkah selanjutnya:</strong><br>
-        1. Ganti file HTML lama di hosting dengan file baru<br>
-        2. Bagikan link baru ke siswa<br>
-        3. Semua perubahan akan otomatis diterapkan!
+        🔢 Versi baru: <strong>v${newVersion}</strong><br>
+        📌 Ganti file lama di hosting dengan file ini.
       </div>
     `;
-    
   } catch (err) {
-    document.getElementById('statusSimpanPermanen').innerHTML = 
-      `<div class="alert-error">❌ Error: ${err.message}</div>`;
+    document.getElementById('statusSimpanPermanen').innerHTML = `<div class="alert-error">❌ Error: ${err.message}</div>`;
   }
 }
 
@@ -1086,13 +1102,11 @@ function enterFullscreen() {
   const elem = document.documentElement;
   if (elem.requestFullscreen) elem.requestFullscreen().catch(()=>{});
   else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-  else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
 }
 
 function exitFullscreen() {
   if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
   else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-  else if (document.msExitFullscreen) document.msExitFullscreen();
 }
 
 document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -1107,35 +1121,68 @@ function handleFullscreenChange() {
   }
 }
 
-// ============ BLOKIR COPY & KEYBOARD ============
+// ============ BLOKIR KEYBOARD & AKSI ============
 document.addEventListener('copy', e => { e.preventDefault(); catatPelanggaran('Percobaan copy teks'); });
 document.addEventListener('cut', e => { e.preventDefault(); catatPelanggaran('Percobaan cut teks'); });
 document.addEventListener('paste', e => { e.preventDefault(); });
+
 document.addEventListener('keydown', e => {
+  // Ctrl + C/X/A/P/S/U
   if (e.ctrlKey && ['c','C','x','X','a','A','p','P','s','S','u','U'].includes(e.key)) {
     e.preventDefault();
-    catatPelanggaran('Pencetakan tombol Ctrl+' + e.key.toUpperCase());
+    catatPelanggaran('Ctrl+' + e.key.toUpperCase());
     return false;
   }
-  if (e.key === 'F12') { e.preventDefault(); catatPelanggaran('Pencetakan tombol F12'); return false; }
-  if (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].includes(e.key)) {
-    e.preventDefault(); catatPelanggaran('Pencetakan tombol DevTools'); return false;
+  // F12 / DevTools
+  if (e.key === 'F12') {
+    e.preventDefault(); catatPelanggaran('Tombol F12 (DevTools)'); return false;
   }
+  // Ctrl+Shift+I/J/C
+  if (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].includes(e.key)) {
+    e.preventDefault(); catatPelanggaran('DevTools shortcut'); return false;
+  }
+  // PrintScreen
   if (e.key === 'PrintScreen' || e.key === 'Print') {
-    e.preventDefault(); catatPelanggaran('Pencetakan tombol PrintScreen');
-    tampilkanOverlayPelanggaran('Tombol PrintScreen terdeteksi!');
+    e.preventDefault(); catatPelanggaran('Tombol PrintScreen');
+    tampilkanOverlayPelanggaran('Screenshot terdeteksi!');
     navigator.clipboard.writeText('').catch(()=>{});
     return false;
   }
-  if ((e.metaKey || e.key === 'Meta') && e.shiftKey && (e.key === 's' || e.key === 'S')) {
-    e.preventDefault(); catatPelanggaran('Pencetakan tombol Windows+Shift+S');
+  // Windows + Shift + S (Snipping Tool)
+  if (e.metaKey && e.shiftKey && (e.key === 's' || e.key === 'S')) {
+    e.preventDefault(); catatPelanggaran('Windows+Shift+S');
     tampilkanOverlayPelanggaran('Snipping Tool terdeteksi!');
     return false;
   }
-  if (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4')) {
-    e.preventDefault(); catatPelanggaran('Pencetakan tombol screenshot Mac');
-    tampilkanOverlayPelanggaran('Screenshot Mac terdeteksi!');
+  // Mac screenshot
+  if (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5')) {
+    e.preventDefault(); catatPelanggaran('Screenshot Mac');
+    tampilkanOverlayPelanggaran('Screenshot terdeteksi!');
     return false;
+  }
+  // Shift + F10 (Context Menu via keyboard)
+  if (e.shiftKey && e.key === 'F10') {
+    e.preventDefault(); catatPelanggaran('Shift+F10 (Context Menu)'); return false;
+  }
+  // Ctrl+Shift+K (Firefox console)
+  if (e.ctrlKey && e.shiftKey && (e.key === 'K' || e.key === 'k')) {
+    e.preventDefault(); catatPelanggaran('Console shortcut'); return false;
+  }
+  // F1 (Help)
+  if (e.key === 'F1') {
+    e.preventDefault(); return false;
+  }
+  // F5 / Ctrl+R (Refresh) - blokir saat ujian
+  if (statusUjian === 'berlangsung' && (e.key === 'F5' || (e.ctrlKey && (e.key === 'r' || e.key === 'R')))) {
+    e.preventDefault(); catatPelanggaran('Mencoba refresh halaman'); return false;
+  }
+  // Ctrl+N / Ctrl+T / Ctrl+W (New window/tab, close tab)
+  if (e.ctrlKey && ['n','N','t','T','w','W'].includes(e.key)) {
+    e.preventDefault(); catatPelanggaran('Ctrl+' + e.key.toUpperCase()); return false;
+  }
+  // Tombol Windows/Meta sendirian (FIX: deteksi lebih robust)
+  if (e.key === 'Meta' || e.key === 'OS' || e.key === 'Super' || e.key === 'Win' || e.key === 'ContextMenu') {
+    e.preventDefault(); return false;
   }
 });
 
@@ -1153,7 +1200,7 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-// ============ FUNGSI PELANGGARAN ============
+// ============ PELANGGARAN (DENGAN BATAS DINAMIS) ============
 function catatPelanggaran(jenis) {
   if (statusUjian !== 'berlangsung') return;
   jumlahPelanggaran++;
@@ -1162,16 +1209,17 @@ function catatPelanggaran(jenis) {
   localStorage.setItem('jumlahPelanggaran', jumlahPelanggaran);
   localStorage.setItem('pelanggaran', JSON.stringify(pelanggaran));
   updateTampilanPelanggaran();
-  if (jumlahPelanggaran >= MAX_PELANGGARAN) {
-    setTimeout(() => { alert('⚠️ 5 pelanggaran tercapai! Ujian otomatis dikumpulkan.'); autoSubmit(); }, 3000);
+  if (jumlahPelanggaran >= maxPelanggaranUjian) {
+    setTimeout(() => { alert(`⚠️ ${maxPelanggaranUjian} pelanggaran tercapai! Ujian otomatis dikumpulkan.`); autoSubmit(); }, 2000);
   }
 }
 
 function updateTampilanPelanggaran() {
   const display = document.getElementById('violationCountDisplay');
   if (display) {
-    display.innerText = `${jumlahPelanggaran} / ${MAX_PELANGGARAN}`;
-    if (jumlahPelanggaran >= 3) display.style.background = '#991b1b';
+    display.innerText = `${jumlahPelanggaran} / ${maxPelanggaranUjian}`;
+    // Warna merah jika sudah >= 60% dari batas
+    if (jumlahPelanggaran >= Math.ceil(maxPelanggaranUjian * 0.6)) display.style.background = '#991b1b';
   }
 }
 
@@ -1179,9 +1227,148 @@ function tampilkanOverlayPelanggaran(pesan) {
   const overlay = document.getElementById('violationOverlay');
   document.getElementById('overlayCounter').innerText = jumlahPelanggaran;
   document.getElementById('overlayCount').innerText = jumlahPelanggaran;
+  document.getElementById('overlayMax').innerText = maxPelanggaranUjian;
+  document.getElementById('overlayInfoText').innerText = `${maxPelanggaranUjian} pelanggaran = ujian otomatis dikumpulkan`;
   document.getElementById('overlayMessage').innerText = pesan;
   overlay.style.display = 'flex';
   setTimeout(() => { overlay.style.display = 'none'; }, 3000);
+}
+
+// ============ WATERMARK ============
+function buatWatermark(nama, nomor, kelas) {
+  const overlay = document.getElementById('watermarkOverlay');
+  overlay.innerHTML = '';
+  
+  const text = `${nama} | ${kelas} | ${nomor}`;
+  const isDark = document.body.classList.contains('dark-mode');
+  const color = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
+  
+  const rows = Math.ceil(window.innerHeight / 120) + 2;
+  const cols = Math.ceil(window.innerWidth / 350) + 2;
+  
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const span = document.createElement('span');
+      span.className = 'wm-text';
+      span.innerText = text;
+      span.style.left = (c * 350 - 100) + 'px';
+      span.style.top = (r * 120 - 50) + 'px';
+      span.style.color = color;
+      overlay.appendChild(span);
+    }
+  }
+}
+
+function hapusWatermark() {
+  const overlay = document.getElementById('watermarkOverlay');
+  if (overlay) overlay.innerHTML = '';
+}
+
+// ============ FORENSIK WAKTU ============
+function formatDurasi(detik) {
+  if (detik < 60) return `${detik} dtk`;
+  const m = Math.floor(detik / 60);
+  const s = detik % 60;
+  return `${m} mnt ${s} dtk`;
+}
+
+function hitungForensik() {
+  // FIX: Fallback jika waktuMulai tidak ada
+  if (!waktuMulai) return null;
+  
+  const timestamps = [];
+  Object.keys(waktuJawaban).forEach(soalIdx => {
+    if (soalUrutan.includes(parseInt(soalIdx))) {
+      timestamps.push({ soalIdx: parseInt(soalIdx), waktu: waktuJawaban[soalIdx] });
+    }
+  });
+  
+  if (timestamps.length === 0) return null;
+  
+  timestamps.sort((a, b) => a.waktu - b.waktu);
+  
+  const durasiPerSoal = [];
+  let prevWaktu = waktuMulai;
+  timestamps.forEach((t, i) => {
+    const durasi = Math.floor((t.waktu - prevWaktu) / 1000);
+    durasiPerSoal.push({
+      soalIdx: t.soalIdx,
+      displayIdx: soalUrutan.indexOf(t.soalIdx) + 1,
+      durasi: durasi,
+      timestamp: t.waktu
+    });
+    prevWaktu = t.waktu;
+  });
+  
+  const totalWaktu = Math.floor((Date.now() - waktuMulai) / 1000);
+  const totalDijawab = durasiPerSoal.length;
+  const totalTidakDijawab = soalUrutan.length - totalDijawab;
+  const rataRata = totalDijawab > 0 ? Math.round(durasiPerSoal.reduce((sum, d) => sum + d.durasi, 0) / totalDijawab) : 0;
+  const tercepat = totalDijawab > 0 ? durasiPerSoal.reduce((min, d) => d.durasi < min.durasi ? d : min, durasiPerSoal[0]) : null;
+  const terlama = totalDijawab > 0 ? durasiPerSoal.reduce((max, d) => d.durasi > max.durasi ? d : max, durasiPerSoal[0]) : null;
+  
+  const mencurigakan = durasiPerSoal.filter(d => d.durasi < 3);
+  
+  return {
+    totalWaktu, totalDijawab, totalTidakDijawab, rataRata, tercepat, terlama,
+    durasiPerSoal, mencurigakan
+  };
+}
+
+function renderForensik(forensik) {
+  if (!forensik) return '';
+  
+  let html = `<div class="forensik-panel">
+    <h3>🔍 Forensik Pengerjaan (Analisis Waktu)</h3>
+    <div class="forensik-grid">
+      <div class="forensik-item">
+        <div class="label">Total Waktu</div>
+        <div class="value">${formatDurasi(forensik.totalWaktu)}</div>
+      </div>
+      <div class="forensik-item">
+        <div class="label">Rata-rata/Soal</div>
+        <div class="value">${formatDurasi(forensik.rataRata)}</div>
+      </div>
+      <div class="forensik-item">
+        <div class="label">Soal Dijawab</div>
+        <div class="value">${forensik.totalDijawab} / ${soalUrutan.length}</div>
+      </div>
+      <div class="forensik-item ${forensik.totalTidakDijawab > 0 ? 'warning' : ''}">
+        <div class="label">Tidak Dijawab</div>
+        <div class="value">${forensik.totalTidakDijawab}</div>
+      </div>
+      ${forensik.tercepat ? `<div class="forensik-item ${forensik.tercepat.durasi < 3 ? 'danger' : ''}">
+        <div class="label">⚡ Tercepat (Soal ${forensik.tercepat.displayIdx})</div>
+        <div class="value">${formatDurasi(forensik.tercepat.durasi)}</div>
+      </div>` : ''}
+      ${forensik.terlama ? `<div class="forensik-item">
+        <div class="label">🐢 Terlama (Soal ${forensik.terlama.displayIdx})</div>
+        <div class="value">${formatDurasi(forensik.terlama.durasi)}</div>
+      </div>` : ''}
+    </div>`;
+  
+  if (forensik.mencurigakan.length > 0) {
+    html += `<div class="alert-error" style="margin-top:10px;">
+      ⚠️ <strong>TERDETEKSI ANOMALI:</strong> ${forensik.mencurigakan.length} soal dijawab dalam waktu kurang dari 3 detik. 
+      Ini mengindikasikan kemungkinan menggunakan auto-clicker, menyalin jawaban, atau menebak asal.
+    </div>`;
+  }
+  
+  html += `<table class="forensik-table">
+    <thead><tr><th>No</th><th>Waktu Pengerjaan</th><th>Status</th></tr></thead>
+    <tbody>`;
+  
+  forensik.durasiPerSoal.forEach(d => {
+    const isSuspicious = d.durasi < 3;
+    html += `<tr class="${isSuspicious ? 'suspicious' : ''}">
+      <td><strong>Soal ${d.displayIdx}</strong></td>
+      <td>${formatDurasi(d.durasi)}</td>
+      <td>${isSuspicious ? '⚠️ Mencurigakan' : '✅ Normal'}</td>
+    </tr>`;
+  });
+  
+  html += `</tbody></table></div>`;
+  return html;
 }
 
 // ============ LOGIKA UJIAN ============
@@ -1189,7 +1376,11 @@ function mulaiUjian() {
   const nama = document.getElementById('nama').value.trim();
   const nomor = document.getElementById('nomor').value.trim();
   const kelas = document.getElementById('kelas').value.trim();
-  if (!nama || !nomor || !kelas) { alert('Mohon lengkapi semua data!'); return; }
+  const token = document.getElementById('tokenUjian').value.trim();
+  
+  if (!nama || !nomor || !kelas) { alert('Mohon lengkapi semua data diri!'); return; }
+  if (token !== configToken) { alert(`❌ Token ujian salah!\n\nToken yang benar: ${configToken}`); return; }
+  
   dataSiswa = {nama, nomor, kelas};
   localStorage.setItem('dataSiswa', JSON.stringify(dataSiswa));
   waktuMulai = Date.now();
@@ -1199,15 +1390,42 @@ function mulaiUjian() {
   jumlahPelanggaran = 0;
   pelanggaran = [];
   jawaban = {};
+  waktuJawaban = {};
+  urutanOpsiPerSoal = {};
+  maxPelanggaranUjian = configMaxPelanggaran; // FIX: Set batas pelanggaran untuk sesi ini
   localStorage.setItem('jumlahPelanggaran', 0);
   localStorage.setItem('pelanggaran', JSON.stringify(pelanggaran));
   localStorage.setItem('jawaban', JSON.stringify(jawaban));
+  localStorage.setItem('waktuJawaban', JSON.stringify(waktuJawaban));
+  localStorage.setItem('urutanOpsiPerSoal', JSON.stringify(urutanOpsiPerSoal));
   durasi = configDurasi * 60;
-  if (configAcak) soalUrutan = acakArray([...Array(soalAktif.length).keys()]);
-  else soalUrutan = [...Array(soalAktif.length).keys()];
+  
+  let pool = [...Array(soalAktif.length).keys()];
+  if (configAcak) pool = acakArray(pool);
+  
+  if (configJumlahSoal > 0 && configJumlahSoal < pool.length) {
+    soalUrutan = pool.slice(0, configJumlahSoal);
+  } else {
+    soalUrutan = pool;
+  }
+  
+  if (configAcakOpsi) {
+    soalUrutan.forEach(soalIdx => {
+      const opsiIndices = [...Array(soalAktif[soalIdx].o.length).keys()];
+      urutanOpsiPerSoal[soalIdx] = acakArray(opsiIndices);
+    });
+  } else {
+    soalUrutan.forEach(soalIdx => {
+      urutanOpsiPerSoal[soalIdx] = [...Array(soalAktif[soalIdx].o.length).keys()];
+    });
+  }
+  
   localStorage.setItem('soalUrutan', JSON.stringify(soalUrutan));
+  localStorage.setItem('urutanOpsiPerSoal', JSON.stringify(urutanOpsiPerSoal));
+  
   isFullscreenActive = true;
   enterFullscreen();
+  buatWatermark(nama, nomor, kelas);
   tampilkanSoal();
   mulaiTimer();
 }
@@ -1218,23 +1436,45 @@ function tampilkanSoal() {
   document.getElementById('resultArea').style.display = 'none';
   document.getElementById('menuAwal').style.display = 'none';
   document.getElementById('timer').innerText = `Waktu Tersisa: ${String(configDurasi).padStart(2,'0')}:00`;
+  
   let html = '';
   soalUrutan.forEach((soalIdx, displayIdx) => {
     const s = soalAktif[soalIdx];
+    const opsiUrutan = urutanOpsiPerSoal[soalIdx] || [...Array(s.o.length).keys()];
+    
     html += `<div class="question"><p>${displayIdx+1}. ${s.q}</p>`;
-    s.o.forEach((opt, j) => {
-      const checked = jawaban[soalIdx] == j ? 'checked' : '';
-      html += `<label class="option"><input type="radio" name="q${soalIdx}" value="${j}" ${checked} onchange="simpanJawaban(${soalIdx}, ${j})"> ${String.fromCharCode(65+j)}. ${opt}</label>`;
+    opsiUrutan.forEach((opsiAsliIdx, posisiBaru) => {
+      const teksOpsi = s.o[opsiAsliIdx];
+      const checked = jawaban[soalIdx] == opsiAsliIdx ? 'checked' : '';
+      const huruf = String.fromCharCode(65 + posisiBaru);
+      html += `<label class="option"><input type="radio" name="q${soalIdx}" value="${opsiAsliIdx}" ${checked} onchange="simpanJawaban(${soalIdx}, ${opsiAsliIdx})"> ${huruf}. ${teksOpsi}</label>`;
     });
     html += `</div>`;
   });
   document.getElementById('soalContainer').innerHTML = html;
   updateTampilanPelanggaran();
+  updateProgressBar();
 }
 
 function simpanJawaban(idx, val) {
   jawaban[idx] = val;
+  waktuJawaban[idx] = Date.now();
   localStorage.setItem('jawaban', JSON.stringify(jawaban));
+  localStorage.setItem('waktuJawaban', JSON.stringify(waktuJawaban));
+  updateProgressBar();
+}
+
+function updateProgressBar() {
+  const total = soalUrutan.length;
+  const answered = Object.keys(jawaban).filter(key => soalUrutan.includes(parseInt(key))).length;
+  const percent = total === 0 ? 0 : Math.round((answered / total) * 100);
+  
+  document.getElementById('progressBar').style.width = percent + '%';
+  document.getElementById('progressText').innerText = `${answered} / ${total}`;
+  
+  if (percent === 100) {
+    document.getElementById('progressBar').style.backgroundColor = '#16a34a';
+  }
 }
 
 function mulaiTimer() {
@@ -1268,8 +1508,10 @@ function autoSubmit() { submitUjian(true); }
 function submitUjian(isAutoSubmit) {
   clearInterval(timerInterval);
   let benar = 0;
-  soalAktif.forEach((s, i) => { if (jawaban[i] == s.a) benar++; });
-  const nilai = Math.round((benar / soalAktif.length) * 100);
+  soalUrutan.forEach(soalIdx => {
+    if (jawaban[soalIdx] == soalAktif[soalIdx].a) benar++;
+  });
+  const nilai = Math.round((benar / soalUrutan.length) * 100);
   statusUjian = 'selesai';
   localStorage.setItem('statusUjian', statusUjian);
   localStorage.setItem('nilai', nilai);
@@ -1278,6 +1520,7 @@ function submitUjian(isAutoSubmit) {
   localStorage.setItem('waktuSelesai', new Date().toLocaleString('id-ID'));
   isFullscreenActive = false;
   exitFullscreen();
+  hapusWatermark();
   tampilkanHasil(nilai, benar, isAutoSubmit);
 }
 
@@ -1288,23 +1531,30 @@ function tampilkanHasil(nilai, benar, isAutoSubmit) {
   const isViolation = jumlahPelanggaran > 0 || isAutoSubmit;
   const resultClass = isViolation ? 'result violation-result' : 'result';
   const titleText = isAutoSubmit ? '🚨 UJIAN DIKUMPULKAN PAKSA' : '✅ Ujian Selesai';
+  
   let violationListHtml = '';
   if (pelanggaran.length > 0) {
     violationListHtml = `<div class="violation-list"><h3>📋 Riwayat Pelanggaran:</h3><ul>${pelanggaran.map(p => `<li><strong>Ke-${p.no}</strong> (${p.waktu}): ${p.jenis}</li>`).join('')}</ul></div>`;
   }
+  
+  const forensik = hitungForensik();
+  const forensikHtml = renderForensik(forensik);
+  
   const waktuSelesai = localStorage.getItem('waktuSelesai') || '-';
+  
   document.getElementById('resultArea').innerHTML = `
     <div class="${resultClass}">
       <h2>${titleText}</h2>
       <p><strong>Nama:</strong> ${dataSiswa.nama}</p>
       <p><strong>Nomor:</strong> ${dataSiswa.nomor}</p>
       <p><strong>Kelas:</strong> ${dataSiswa.kelas}</p>
-      <p style="font-size:12px; color:#6b7280;">Selesai: ${waktuSelesai}</p>
+      <p style="font-size:12px; color:var(--text-secondary);">Selesai: ${waktuSelesai}</p>
       <div class="score">${nilai}</div>
-      <p>Benar: <strong>${benar}</strong> / ${soalAktif.length}</p>
-      <p style="margin-top:12px; font-size:16px;"><strong>⚠️ Pelanggaran: <span style="color:#dc2626; font-size:20px;">${jumlahPelanggaran}</span></strong></p>
-      ${isAutoSubmit ? '<p style="color:#991b1b; font-weight:bold; margin-top:8px;">Dikumpulkan otomatis (5 pelanggaran)</p>' : ''}
+      <p>Benar: <strong>${benar}</strong> / ${soalUrutan.length}</p>
+      <p style="margin-top:12px; font-size:16px;"><strong>⚠️ Pelanggaran: <span style="color:#dc2626; font-size:20px;">${jumlahPelanggaran}</span> / ${maxPelanggaranUjian}</strong></p>
+      ${isAutoSubmit ? `<p style="color:#991b1b; font-weight:bold; margin-top:8px;">Dikumpulkan otomatis (${maxPelanggaranUjian} pelanggaran)</p>` : ''}
       ${violationListHtml}
+      ${forensikHtml}
       <div class="locked-box">🔒 <strong>Ujian dikunci.</strong> Hubungi guru untuk reset.</div>
       <button class="btn-reset" style="float:none; margin-top:15px; padding:10px 20px; font-size:14px;" onclick="bukaModalReset()">🔐 Reset (Guru)</button>
     </div>
@@ -1323,19 +1573,10 @@ function konfirmasiReset() {
   const pwd = document.getElementById('passwordGuru').value;
   if (pwd === PASSWORD_GURU) {
     if (confirm('Yakin ingin mereset ujian siswa ini?')) {
-      localStorage.removeItem('statusUjian');
-      localStorage.removeItem('waktuMulai');
-      localStorage.removeItem('jawaban');
-      localStorage.removeItem('dataSiswa');
-      localStorage.removeItem('pelanggaran');
-      localStorage.removeItem('jumlahPelanggaran');
-      localStorage.removeItem('nilai');
-      localStorage.removeItem('benar');
-      localStorage.removeItem('autoSubmit');
-      localStorage.removeItem('waktuSelesai');
-      localStorage.removeItem('soalUrutan');
+      ['statusUjian','waktuMulai','jawaban','dataSiswa','pelanggaran','jumlahPelanggaran','nilai','benar','autoSubmit','waktuSelesai','soalUrutan','urutanOpsiPerSoal','waktuJawaban'].forEach(k => localStorage.removeItem(k));
       isFullscreenActive = false;
       exitFullscreen();
+      hapusWatermark();
       alert('Ujian berhasil direset!');
       location.reload();
     }
@@ -1346,16 +1587,33 @@ function konfirmasiReset() {
 
 // ============ INISIALISASI ============
 window.onload = function() {
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+    document.querySelector('.dark-mode-toggle').innerText = '☀️';
+  }
+  
   updateJudulDiSemuaTempat();
+  
   if (statusUjian === 'berlangsung') {
     waktuMulai = parseInt(localStorage.getItem('waktuMulai'));
     jumlahPelanggaran = parseInt(localStorage.getItem('jumlahPelanggaran') || '0');
     pelanggaran = JSON.parse(localStorage.getItem('pelanggaran') || '[]');
     jawaban = JSON.parse(localStorage.getItem('jawaban') || '{}');
+    waktuJawaban = JSON.parse(localStorage.getItem('waktuJawaban') || '{}');
+    urutanOpsiPerSoal = JSON.parse(localStorage.getItem('urutanOpsiPerSoal') || '{}');
     soalUrutan = JSON.parse(localStorage.getItem('soalUrutan') || 'null') || [...Array(soalAktif.length).keys()];
     durasi = configDurasi * 60;
+    maxPelanggaranUjian = configMaxPelanggaran; // FIX: Restore batas pelanggaran
     isFullscreenActive = true;
     document.getElementById('menuAwal').style.display = 'none';
+    
+    soalUrutan.forEach(soalIdx => {
+      if (!urutanOpsiPerSoal[soalIdx]) {
+        urutanOpsiPerSoal[soalIdx] = [...Array(soalAktif[soalIdx].o.length).keys()];
+      }
+    });
+    
+    if (dataSiswa) buatWatermark(dataSiswa.nama, dataSiswa.nomor, dataSiswa.kelas);
     tampilkanSoal();
     mulaiTimer();
     enterFullscreen();
@@ -1371,6 +1629,10 @@ window.onload = function() {
     const isAutoSubmit = localStorage.getItem('autoSubmit') === 'true';
     jumlahPelanggaran = parseInt(localStorage.getItem('jumlahPelanggaran') || '0');
     pelanggaran = JSON.parse(localStorage.getItem('pelanggaran') || '[]');
+    waktuJawaban = JSON.parse(localStorage.getItem('waktuJawaban') || '{}');
+    soalUrutan = JSON.parse(localStorage.getItem('soalUrutan') || 'null') || [];
+    waktuMulai = parseInt(localStorage.getItem('waktuMulai') || Date.now());
+    maxPelanggaranUjian = configMaxPelanggaran; // FIX: Restore batas pelanggaran
     if (!dataSiswa) {
       document.getElementById('menuAwal').style.display = 'none';
       document.getElementById('resultArea').innerHTML = `
@@ -1387,7 +1649,12 @@ window.onload = function() {
     tampilkanHasil(parseInt(nilai), benar, isAutoSubmit);
   }
 };
-</script>
 
+window.addEventListener('resize', () => {
+  if (statusUjian === 'berlangsung' && dataSiswa) {
+    buatWatermark(dataSiswa.nama, dataSiswa.nomor, dataSiswa.kelas);
+  }
+});
+</script>
 </body>
 </html>
